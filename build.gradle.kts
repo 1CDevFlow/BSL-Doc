@@ -51,8 +51,6 @@ dependencies {
 
     // template engine
     implementation("com.github.jknack:handlebars:4.3.1")
-    implementation("org.apache.velocity:velocity-engine-core:2.3")
-    implementation("org.apache.velocity:velocity-tools:2.0")
 
     testImplementation("org.junit.jupiter:junit-jupiter:$JUINT_VERSION")
     testImplementation("org.junit.jupiter:junit-jupiter-api:$JUINT_VERSION")
@@ -74,17 +72,11 @@ tasks.withType<JavaCompile> {
 }
 
 tasks.jar {
-//    manifest {
-//        attributes["Main-Class"] = "ru.alkoleft.bsl.doc.Main"
-//    }
     enabled = true
     archiveClassifier.set("")
 }
 
 tasks.bootJar {
-//    manifest {
-//        attributes["Main-Class"] = "ru.alkoleft.bsl.doc.Main"
-//    }
     archiveClassifier.set("exec")
 }
 
@@ -106,8 +98,6 @@ tasks {
 
     group = "build"
 }
-
-
 
 publishing {
     repositories {
