@@ -25,7 +25,7 @@ title: {{name}}
 {{#each parameters as | parameter|}}
 * `{{parameter.name}}`
     {{~#each parameter.types as | type typeIndex|}}
-    * `{{type.name}}` - {{links type.description}}
+    * {{#with type}}{{#shift 3}}{{#block "docusaurus/value-definition"}}{{/block}}{{/shift}}{{~/with}}
     {{~else}} - {{links description}}
     {{~/each}}
 {{~/each}}

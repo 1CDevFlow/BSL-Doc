@@ -1,8 +1,9 @@
 {{~#if link~}}
 {{links link}}
 {{~/if}}
-{{~#if parameters}}<details><summary>{{description}} ({{name}})
-{{~else}}`{{name}}` - {{links description}}
+{{~#if parameters}}
+<details><summary>{{description}} ({{name}})
+{{~else}}`{{name}}` - {{#links description}}{{#block "docusaurus/value-definition"}}{{/block}}{{/links}}
 {{~/if}}
 {{~#if parameters}}</summary>
 {{/if}}

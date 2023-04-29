@@ -4,7 +4,6 @@ import com.github._1c_syntax.mdclasses.mdo.AbstractMDObjectBSL;
 import lombok.SneakyThrows;
 import ru.alkoleft.bsl.doc.bsl.BslContext;
 import ru.alkoleft.bsl.doc.bsl.ModuleContext;
-import ru.alkoleft.bsl.doc.render.RenderContext;
 
 import java.nio.file.Path;
 import java.util.concurrent.atomic.AtomicInteger;

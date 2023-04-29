@@ -10,13 +10,16 @@ public class Shifter implements Helper<Object> {
 
   @Override
   public Object apply(Object context, Options options) throws IOException {
-    Options.Buffer buffer = options.buffer();
-    int startedShift = shift;
+    var buffer = options.buffer();
+    var startedShift = shift;
+
+    int delta = context instanceof Integer ? (Integer) context : 0;
+    shift += delta;
     shift++;
     var content = options.fn();
-    shift--;
-    if (startedShift > 0) {
-      var newChar = "\n" + new String(new char[startedShift]).replace('\0', '\t');
+    shift = startedShift;
+    if (startedShift + delta > 0) {
+      var newChar = "\n" + new String(new char[2 * (startedShift + delta)]).replace('\0', ' ');
       buffer.append(content.toString().replace("\n", newChar));
     } else {
       buffer.append(content);
