@@ -2,9 +2,12 @@ plugins {
     java
     application
     id("io.freefair.lombok") version "6.6.1"
+    id("maven-publish")
+    id("org.springframework.boot") version "2.7.10"
+    id("io.spring.dependency-management") version "1.1.0"
 }
 
-group = "org.example"
+group = "ru.alkoleft.bsl.doc"
 version = "0.1.0-SNAPSHOT"
 
 val JUINT_VERSION = "5.8.2"
@@ -18,8 +21,6 @@ repositories {
 java {
     sourceCompatibility = JavaVersion.VERSION_11
     targetCompatibility = JavaVersion.VERSION_11
-    withSourcesJar()
-    withJavadocJar()
 }
 
 java.sourceSets["main"].java {
@@ -27,6 +28,11 @@ java.sourceSets["main"].java {
 }
 
 dependencies {
+    // spring
+    implementation("org.springframework.boot:spring-boot-starter")
+    implementation("org.springframework.boot:spring-boot-starter-websocket")
+    implementation("info.picocli:picocli-spring-boot-starter:4.7.1")
+
     implementation("com.github.1c-syntax", "bsl-language-server", "0.20.0")
 
     implementation("com.github.1c-syntax", "mdclasses", "0.10.3")
@@ -48,9 +54,6 @@ dependencies {
     implementation("org.apache.velocity:velocity-engine-core:2.3")
     implementation("org.apache.velocity:velocity-tools:2.0")
 
-    // cli
-    implementation("info.picocli:picocli:4.7.3")
-
     testImplementation("org.junit.jupiter:junit-jupiter:$JUINT_VERSION")
     testImplementation("org.junit.jupiter:junit-jupiter-api:$JUINT_VERSION")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$JUINT_VERSION")
@@ -61,5 +64,65 @@ tasks.test {
 
     testLogging {
         events("passed", "skipped", "failed", "standard_error")
+    }
+}
+
+tasks.withType<JavaCompile> {
+    options.encoding = "UTF-8"
+    options.compilerArgs.add("-Xlint:unchecked")
+    options.compilerArgs.add("-Xlint:deprecation")
+}
+
+tasks.jar {
+//    manifest {
+//        attributes["Main-Class"] = "ru.alkoleft.bsl.doc.Main"
+//    }
+    enabled = true
+    archiveClassifier.set("")
+}
+
+tasks.bootJar {
+//    manifest {
+//        attributes["Main-Class"] = "ru.alkoleft.bsl.doc.Main"
+//    }
+    archiveClassifier.set("exec")
+}
+
+tasks {
+    val fatJar = register<Jar>("fatJar") {
+        dependsOn.addAll(listOf("compileJava", "processResources")) // We need this for Gradle optimization to work
+        archiveClassifier.set("standalone") // Naming the jar
+        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+        manifest { attributes(mapOf("Main-Class" to application.mainClass)) } // Provided we set it up in the application plugin configuration
+        val sourcesMain = sourceSets.main.get()
+        val contents = configurations.runtimeClasspath.get()
+            .map { if (it.isDirectory) it else zipTree(it) } +
+                sourcesMain.output
+        from(contents)
+    }
+    build {
+        dependsOn(fatJar) // Trigger fat jar creation during build
+    }
+
+    group = "build"
+}
+
+
+
+publishing {
+    repositories {
+        maven {
+            name = "bsldoc"
+            url = uri("https://maven.pkg.github.com/alkoleft/bsldoc")
+            credentials {
+                username = project.findProperty("gpr.user") as String? ?: System.getenv("USERNAME")
+                password = project.findProperty("gpr.key") as String? ?: System.getenv("TOKEN")
+            }
+        }
+    }
+    publications {
+        register<MavenPublication>("gpr") {
+            from(components["java"])
+        }
     }
 }
