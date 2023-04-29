@@ -1,0 +1,17 @@
+{{~#if link~}}
+{{links link}}
+{{~/if}}
+{{~#if parameters}}<details><summary>{{description}} ({{name}})
+{{~else}}`{{name}}` - {{links description}}
+{{~/if}}
+{{~#if parameters}}</summary>
+{{/if}}
+
+{{~#each parameters}}
+{{#shift}}* `{{name}}` - {{#each types~}}{{#block "docusaurus/value-definition"}}{{/block}}{{~/each}}{{/shift}}
+{{~/each}}
+
+{{~#if parameters}}
+
+</details>
+{{/if}}

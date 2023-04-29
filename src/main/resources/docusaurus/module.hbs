@@ -1,0 +1,51 @@
+---
+sidebar_position: {{index}}
+title: {{name}}
+---
+
+# {{present}} ({{name}})
+
+{{~#if description}}
+
+{{links description}}
+
+{{~/if}}
+
+## Методы модуля
+
+{{~#each methods}}
+
+---
+### `{{name}}`
+
+{{#if description}}{{links description}}{{/if}}
+{{~#if parameters}}
+
+**Параметры метода**
+{{#each parameters as | parameter|}}
+* `{{parameter.name}}`
+    {{~#each parameter.types as | type typeIndex|}}
+    * `{{type.name}}` - {{links type.description}}
+    {{~else}} - {{links description}}
+    {{~/each}}
+{{~/each}}
+    {{~/if}}
+{{~#if returnedValue}}
+
+**Возвращает**
+
+{{#with returnedValue}}{{#block "docusaurus/value-definition"}}{{/block}}{{~/with}}
+{{~/if}}
+
+{{~#if examples}}
+
+Примеры:
+
+```bsl
+{{~#each examples}}
+{{this}}
+{{~/each}}
+```
+
+{{/if}}
+{{~/each}}
