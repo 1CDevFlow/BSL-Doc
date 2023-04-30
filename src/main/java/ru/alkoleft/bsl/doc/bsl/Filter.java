@@ -12,4 +12,7 @@ public class Filter {
   boolean isExport;
   @Singular
   List<String> regions;
+  @Singular
+  List<String> rootSubsystems;
+
 }

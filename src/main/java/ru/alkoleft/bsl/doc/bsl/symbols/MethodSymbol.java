@@ -3,8 +3,11 @@ package ru.alkoleft.bsl.doc.bsl.symbols;
 import com.github._1c_syntax.bsl.languageserver.context.symbol.description.MethodDescription;
 import com.google.common.base.Strings;
 import lombok.Builder;
+import lombok.Setter;
 import lombok.Value;
+import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
+import org.eclipse.lsp4j.Range;
 import ru.alkoleft.bsl.doc.bsl.BslContext;
 
 import java.util.Collections;
@@ -22,7 +25,10 @@ public class MethodSymbol {
   Optional<MethodDescription> fullDescription;
 
   List<ParameterDefinition> parameters;
+  @Setter
+  @NonFinal
   RegionSymbol region;
+  Range range;
 
   public String getDescription() {
     return fullDescription.map(MethodDescription::getPurposeDescription).orElse("");

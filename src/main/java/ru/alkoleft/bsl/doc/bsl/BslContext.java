@@ -6,6 +6,7 @@ import com.github._1c_syntax.bsl.types.MDOType;
 import com.github._1c_syntax.mdclasses.Configuration;
 import com.github._1c_syntax.mdclasses.mdo.MDCommonModule;
 import com.google.common.base.Strings;
+import lombok.extern.slf4j.Slf4j;
 import org.antlr.v4.runtime.Token;
 import ru.alkoleft.bsl.doc.bsl.symbols.MethodSymbol;
 import ru.alkoleft.bsl.doc.bsl.symbols.MethodSymbolComputer;
@@ -21,6 +22,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+@Slf4j
 public class BslContext {
 
   private static BslContext current;
@@ -69,7 +71,9 @@ public class BslContext {
 
   private ModuleContext buildModuleContext(MDCommonModule module) {
     var bslModules = module.getModules();
-    var srcPath = Path.of(bslModules.get(0).getUri());
+    var bslModule = bslModules.get(0);
+    log.debug("Parse module: " + bslModule.getOwner().getName() + "." + bslModule.getModuleType());
+    var srcPath = Path.of(bslModule.getUri());
     List<MethodSymbol> methods;
     String description;
     try {

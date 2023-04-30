@@ -37,7 +37,7 @@ public class HandleLinks implements Helper<String> {
     var context = Context.newBuilder(methodInfo.getMethod().getReturnedValue()).build();
     return baseValue + options.apply(options.fn, context).toString();
   }
-  
+
   private String getLink(Links.Link link) {
     if (link.getOwnerName() != null && link.getMethodName() != null) {
       return link.getOwnerName() + "#" + link.getMethodName().toLowerCase(Locale.ROOT);
