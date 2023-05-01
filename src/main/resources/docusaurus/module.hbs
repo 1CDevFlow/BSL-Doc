@@ -17,6 +17,10 @@ title: {{name}}
 
 ### `{{name}}`
 
+{{#if deprecated~}}
+:::caution Устаревший
+:::
+{{~/if}}
 {{#if description}}{{links description}}{{/if}}
 {{~#if parameters}}
 
