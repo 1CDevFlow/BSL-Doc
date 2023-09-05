@@ -33,7 +33,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-websocket")
     implementation("info.picocli:picocli-spring-boot-starter:4.7.1")
 
-    implementation("com.github.1c-syntax", "bsl-language-server", "0.20.0")
+    implementation("io.github.1c-syntax", "bsl-language-server", "0.20.0")
 
     implementation("com.github.1c-syntax", "mdclasses", "0.10.3")
     implementation("io.github.1c-syntax", "bsl-common-library", "f6714e4e")

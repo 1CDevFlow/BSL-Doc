@@ -15,7 +15,7 @@ title: {{name}}
 {{#each methods}}
 ---
 
-### `{{name}}`
+### `{{name}}`{{#debug}}Формирование описания метода {{name}}{{/debug}}
 
 {{#if deprecated~}}
 :::caution Устаревший
@@ -26,7 +26,7 @@ title: {{name}}
 
 **Параметры метода**
 {{#each parameters as | parameter|}}
-* `{{parameter.name}}`
+* `{{parameter.name}}`{{#debug}}Формирование описания параметра {{parameter.name}}{{/debug}}
     {{~#each parameter.types as | type typeIndex|}}
     * {{#with type}}{{#shift 3}}{{#block "docusaurus/value-definition"}}{{/block}}{{/shift}}{{~/with}}
     {{~else}} - {{links description}}

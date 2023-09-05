@@ -14,5 +14,7 @@ public class Filter {
   List<String> regions;
   @Singular
   List<String> rootSubsystems;
+  @Singular
+  List<String> modules;
 
 }

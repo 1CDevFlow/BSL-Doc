@@ -2,12 +2,14 @@ package ru.alkoleft.bsl.doc.render;
 
 import com.github._1c_syntax.mdclasses.mdo.AbstractMDObjectBSL;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import ru.alkoleft.bsl.doc.bsl.BslContext;
 import ru.alkoleft.bsl.doc.bsl.ModuleContext;
 
 import java.nio.file.Path;
 import java.util.concurrent.atomic.AtomicInteger;
 
+@Slf4j
 public class Render {
 
   RenderContext renderContext;
@@ -26,6 +28,8 @@ public class Render {
   @SneakyThrows
   public void renderModule(ModuleContext module, Path outputPath, int index) {
     var itemRender = renderContext.getRender("module");
+
+    log.debug("Render module " + module.getOwner().getName());
 
     itemRender.put("index", index);
     itemRender.put("name", module.getOwner().getName());

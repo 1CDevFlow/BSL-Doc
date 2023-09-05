@@ -48,10 +48,15 @@ public class BslContext {
   }
 
   public Stream<ModuleContext> getModules() {
-    return modules
-        .stream()
-        .map(this::buildModuleContext)
-        .filter(ModuleContext::isNotEmpty);
+    var stream = modules.stream();
+
+    if (!filter.getModules().isEmpty()) {
+      stream = stream.filter(m -> filter.getModules().contains(m.getName()));
+    }
+
+    return stream
+            .map(this::buildModuleContext)
+            .filter(ModuleContext::isNotEmpty);
   }
 
   public boolean contains(String name) {
