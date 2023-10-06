@@ -1,6 +1,7 @@
 package ru.alkoleft.bsl.doc.bsl;
 
 import com.github._1c_syntax.mdclasses.mdo.AbstractMDObjectBSL;
+import com.github._1c_syntax.mdclasses.mdo.support.MDOModule;
 import lombok.Builder;
 import lombok.Value;
 import ru.alkoleft.bsl.doc.bsl.symbols.MethodSymbol;
@@ -12,6 +13,7 @@ import java.util.Optional;
 @Value
 public class ModuleContext {
   AbstractMDObjectBSL owner;
+  MDOModule module;
   List<MethodSymbol> methods;
   String description;
 
@@ -21,6 +23,10 @@ public class ModuleContext {
 
   public boolean isNotEmpty() {
     return methods != null && !methods.isEmpty();
+  }
+
+  public boolean isEmpty() {
+    return methods == null || methods.isEmpty();
   }
 
   public Optional<MethodSymbol> getMethod(String name) {

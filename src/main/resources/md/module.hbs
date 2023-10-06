@@ -1,6 +1,4 @@
-# {{present}} ({{name}})
-
-## Методы модуля
+# Программный интерфейс: {{#unless isCommonModule}}{{type}}.{{/unless}}{{present}}
 
 {{~#each methods}}
 
@@ -9,13 +7,11 @@
 {{#if description}}{{description}}{{/if}}
     {{~#if parameters}}
 
-Параметры метода:
-
 | Имя | Тип | Описание |
 |-----|-----|---------|
 {{~#each parameters as | parameter|}}
     {{~#each parameter.types as | type typeIndex|}}
-| {{#unless typeIndex}}`{{parameter.name}}`{{/unless}} | `{{type.name}}` | {{type.description}} |
+| {{#unless typeIndex}}`{{parameter.name}}`{{/unless}} | `{{type.name}}` | {{#single-line}}{{links type.description}}{{/single-line}} |
     {{~else}}
 | {{name}} | | {{description}} |
     {{~/each}}
@@ -23,7 +19,7 @@
     {{~/if}}
 {{~#if returnedValue}}
 
-Возвращает:
+Возвращаемое значение
 
 {{#if returnedValue.link}}
 [{{returnedValue.link}}]({{returnedValue.link}})

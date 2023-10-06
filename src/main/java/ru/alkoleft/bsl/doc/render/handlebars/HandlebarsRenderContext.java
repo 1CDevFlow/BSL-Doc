@@ -23,6 +23,8 @@ public class HandlebarsRenderContext implements RenderContext {
     handlebars.registerHelper("links", linksRender = new HandleLinks());
     handlebars.registerHelper("shift", new Shifter());
     handlebars.registerHelper("debug", new RenderDebugger());
+    handlebars.registerHelper("great", new HelperGreat());
+    handlebars.registerHelper("single-line", new SingleLineHelper());
   }
 
   public void setContext(BslContext context) {

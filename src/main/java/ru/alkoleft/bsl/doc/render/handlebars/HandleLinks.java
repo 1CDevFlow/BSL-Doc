@@ -36,7 +36,7 @@ public class HandleLinks implements Helper<String> {
   @SneakyThrows
   private String replaceTo(String baseValue, Links.Link link, Options options) {
     var methodInfo = BslContext.getCurrent().getMethodInfo(link);
-    if (methodInfo == null || methodInfo.isPublishing()) {
+    if (methodInfo == null || methodInfo.isPublishing() || methodInfo.getMethod() == null) {
       return String.format("[%s](%s)", baseValue, getLink(link));
     }
 

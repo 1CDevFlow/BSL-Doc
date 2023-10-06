@@ -12,8 +12,9 @@ import ru.alkoleft.bsl.doc.render.Factory;
 import ru.alkoleft.bsl.doc.render.OutputFormat;
 import ru.alkoleft.bsl.doc.render.Render;
 import ru.alkoleft.bsl.doc.render.RenderOptions;
+import ru.alkoleft.bsl.doc.render.StructureRender;
+import ru.alkoleft.bsl.doc.structure.Builder;
 
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
 
@@ -50,13 +51,14 @@ public class RenderCommand implements Runnable {
     log.debug("Filter: " + filter.toString());
     log.debug("Options: " + options.toString());
 
+    var bslContext = new BslContext(sources, filter);
     var renderContext = Factory.createRenderContext(options);
-    var render = new Render(renderContext);
 
-    BslContext bslContext = new BslContext(sources, filter);
-    bslContext.load();
+    var structure = Builder.build(bslContext);
+    Builder.print(structure);
 
-    Files.createDirectories(destination);
-    render.render(bslContext, destination);
+    new StructureRender().render(new Render(renderContext), structure, destination);
+//    var render = new SubsystemTreeRender(bslContext, renderContext, destination);
+//    render.render();
   }
 }

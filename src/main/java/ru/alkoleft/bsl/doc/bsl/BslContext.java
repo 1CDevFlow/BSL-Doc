@@ -4,8 +4,14 @@ import com.github._1c_syntax.bsl.parser.BSLParser;
 import com.github._1c_syntax.bsl.parser.BSLTokenizer;
 import com.github._1c_syntax.bsl.types.MDOType;
 import com.github._1c_syntax.mdclasses.Configuration;
+import com.github._1c_syntax.mdclasses.mdo.AbstractMDObjectBSL;
+import com.github._1c_syntax.mdclasses.mdo.AbstractMDObjectBase;
 import com.github._1c_syntax.mdclasses.mdo.MDCommonModule;
+import com.github._1c_syntax.mdclasses.mdo.MDSubsystem;
+import com.github._1c_syntax.mdclasses.mdo.support.MDOModule;
 import com.google.common.base.Strings;
+import io.vavr.control.Either;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.antlr.v4.runtime.Token;
 import ru.alkoleft.bsl.doc.bsl.symbols.MethodSymbol;
@@ -15,7 +21,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -25,15 +33,27 @@ import java.util.stream.Stream;
 @Slf4j
 public class BslContext {
 
+  @Getter
   private static BslContext current;
 
-  public static BslContext getCurrent() {
-    return current;
-  }
-
+  @Getter
   Configuration configuration;
+
+  @Getter
   Filter filter;
+
   List<ModuleContext> modules = Collections.emptyList();
+
+  Set<MDOType> topObjectsType = Set.of(
+      MDOType.COMMON_MODULE,
+      MDOType.ENUM,
+      MDOType.CATALOG,
+      MDOType.DOCUMENT,
+      MDOType.ACCOUNTING_REGISTER,
+      MDOType.ACCUMULATION_REGISTER,
+      MDOType.CALCULATION_REGISTER,
+      MDOType.INFORMATION_REGISTER
+  );
 
   private static final Set<Integer> VALID_TOKEN_TYPES_FOR_COMMENTS_SEARCH = Set.of(
       BSLParser.LINE_COMMENT,
@@ -55,8 +75,39 @@ public class BslContext {
     }
 
     return stream
-            .map(this::buildModuleContext)
-            .filter(ModuleContext::isNotEmpty);
+        .map(this::buildModuleContext)
+        .filter(ModuleContext::isNotEmpty);
+  }
+
+  public Stream<MDSubsystem> getRootSubsystems() {
+    return configuration.getOrderedTopMDObjects().get(MDOType.SUBSYSTEM).stream()
+        .map(MDSubsystem.class::cast);
+  }
+
+  public Stream<MDSubsystem> getChildrenSubsystems(MDSubsystem parent) {
+    return parent.getChildren().stream()
+        .filter(Either::isRight)
+        .map(Either::get)
+        .filter(MDSubsystem.class::isInstance)
+        .map(MDSubsystem.class::cast);
+  }
+
+  public Stream<MDSubsystem> getSubsystems() {
+    return getRootSubsystems()
+        .flatMap(this::getRecursiveChildrenSubsystems);
+  }
+
+  private Stream<MDSubsystem> getRecursiveChildrenSubsystems(MDSubsystem parent) {
+    if (parent.getChildren().isEmpty()) {
+      return Stream.of(parent);
+    }
+
+    return Stream.concat(Stream.of(parent), parent.getChildren().stream()
+        .filter(Either::isRight)
+        .map(Either::get)
+        .filter(MDSubsystem.class::isInstance)
+        .map(MDSubsystem.class::cast)
+        .flatMap(this::getRecursiveChildrenSubsystems));
   }
 
   public boolean contains(String name) {
@@ -67,6 +118,20 @@ public class BslContext {
     return modules.stream().filter(it -> it.getName().equalsIgnoreCase(name)).findAny();
   }
 
+  public Stream<AbstractMDObjectBSL> getSubsystemObjects(MDSubsystem subsystem) {
+
+    return configuration.getChildren()
+        .stream()
+        .filter(AbstractMDObjectBSL.class::isInstance)
+        .filter(this::isTopObject)
+        .filter(it -> it.getIncludedSubsystems().contains(subsystem))
+        .map(AbstractMDObjectBSL.class::cast);
+  }
+
+  boolean isTopObject(AbstractMDObjectBase obj) {
+    return topObjectsType.contains(obj.getMdoType());
+  }
+
   public void load() {
     modules = configuration.getOrderedTopMDObjects().get(MDOType.COMMON_MODULE).stream()
         .map(MDCommonModule.class::cast)
@@ -74,10 +139,18 @@ public class BslContext {
         .collect(Collectors.toList());
   }
 
-  private ModuleContext buildModuleContext(MDCommonModule module) {
+  public ModuleContext buildModuleContext(MDCommonModule module) {
     var bslModules = module.getModules();
     var bslModule = bslModules.get(0);
-    log.debug("Parse module: " + bslModule.getOwner().getName() + "." + bslModule.getModuleType());
+    return buildModuleContext(bslModule);
+  }
+
+  public ModuleContext buildFilteredModuleContext(MDOModule bslModule) {
+    return buildModuleContext(buildModuleContext(bslModule));
+  }
+  public ModuleContext buildModuleContext(MDOModule bslModule) {
+    var owner = (AbstractMDObjectBSL) bslModule.getOwner();
+    log.debug("Parse module: " + owner.getName() + "." + bslModule.getModuleType());
     var srcPath = Path.of(bslModule.getUri());
     List<MethodSymbol> methods;
     String description;
@@ -88,11 +161,12 @@ public class BslContext {
       methods = computer.compute(tokenizer);
       description = computeModuleDescription(tokenizer);
     } catch (Exception e) {
-      throw new RuntimeException(module.getMdoReference().getMdoRef() + ". Module parsing error", e);
+      throw new RuntimeException(owner.getMdoReference().getMdoRef() + ". Module parsing error", e);
     }
 
     return ModuleContext.builder()
-        .owner(module)
+        .owner(owner)
+        .module(bslModule)
         .methods(methods)
         .description(description)
         .build();
