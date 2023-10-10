@@ -9,7 +9,6 @@ import ru.alkoleft.bsl.doc.render.contexts.ContextFactory;
 import ru.alkoleft.bsl.doc.render.handlebars.RenderContext;
 
 import java.nio.file.Path;
-import java.util.Collections;
 import java.util.List;
 
 @Slf4j

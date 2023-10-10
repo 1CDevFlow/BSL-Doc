@@ -13,9 +13,9 @@ public interface StructureBuilder {
   @UtilityClass
   class Factory {
     public StructureBuilder builder(RenderOptions options) {
-      if(options.isSubsystemHierarchy()){
+      if (options.isSubsystemHierarchy()) {
         return new SubsystemsStructureBuilder();
-      }else {
+      } else {
         return new FlatStructureBuilder();
       }
     }

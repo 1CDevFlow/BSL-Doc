@@ -1,6 +1,5 @@
 package ru.alkoleft.bsl.doc.structure;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 

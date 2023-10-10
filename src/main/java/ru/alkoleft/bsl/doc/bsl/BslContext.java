@@ -31,17 +31,18 @@ import java.util.stream.Stream;
 @Slf4j
 public class BslContext {
 
+  private static final Set<Integer> VALID_TOKEN_TYPES_FOR_COMMENTS_SEARCH = Set.of(
+      BSLParser.LINE_COMMENT,
+      BSLParser.WHITE_SPACE,
+      BSLParser.AMPERSAND
+  );
   @Getter
   private static BslContext current;
-
   @Getter
   Configuration configuration;
-
   @Getter
   Filter filter;
-
   List<ModuleInfo> modules = Collections.emptyList();
-
   Set<MDOType> topObjectsType = Set.of(
       MDOType.COMMON_MODULE,
       MDOType.ENUM,
@@ -53,16 +54,48 @@ public class BslContext {
       MDOType.INFORMATION_REGISTER
   );
 
-  private static final Set<Integer> VALID_TOKEN_TYPES_FOR_COMMENTS_SEARCH = Set.of(
-      BSLParser.LINE_COMMENT,
-      BSLParser.WHITE_SPACE,
-      BSLParser.AMPERSAND
-  );
-
   public BslContext(Path path, Filter filter) {
     this.filter = filter;
     configuration = Configuration.create(path);
     current = this;
+  }
+
+  public static List<Token> getComments(List<Token> tokens, Token token) {
+    List<Token> comments = new ArrayList<>();
+    fillCommentsCollection(tokens, token, comments);
+    return comments;
+  }
+
+  private static void fillCommentsCollection(List<Token> tokens, Token currentToken, List<Token> lines) {
+
+    int index = currentToken.getTokenIndex();
+
+    if (index == 0) {
+      return;
+    }
+
+    var previousToken = tokens.get(index - 1);
+
+    if (abortSearchComments(previousToken, currentToken)) {
+      return;
+    }
+
+    fillCommentsCollection(tokens, previousToken, lines);
+    int type = previousToken.getType();
+    if (type == BSLParser.LINE_COMMENT) {
+      lines.add(previousToken);
+    }
+  }
+
+  private static boolean abortSearchComments(Token previousToken, Token currentToken) {
+    int type = previousToken.getType();
+    return !VALID_TOKEN_TYPES_FOR_COMMENTS_SEARCH.contains(type) || isBlankLine(previousToken, currentToken);
+  }
+
+  private static boolean isBlankLine(Token previousToken, Token currentToken) {
+    return previousToken.getType() == BSLParser.WHITE_SPACE
+        && (previousToken.getTokenIndex() == 0
+        || (previousToken.getLine() + 1) != currentToken.getLine());
   }
 
   public Stream<MDOModule> getModules() {
@@ -262,44 +295,6 @@ public class BslContext {
       region = region.getParent();
     }
     return false;
-  }
-
-  public static List<Token> getComments(List<Token> tokens, Token token) {
-    List<Token> comments = new ArrayList<>();
-    fillCommentsCollection(tokens, token, comments);
-    return comments;
-  }
-
-  private static void fillCommentsCollection(List<Token> tokens, Token currentToken, List<Token> lines) {
-
-    int index = currentToken.getTokenIndex();
-
-    if (index == 0) {
-      return;
-    }
-
-    var previousToken = tokens.get(index - 1);
-
-    if (abortSearchComments(previousToken, currentToken)) {
-      return;
-    }
-
-    fillCommentsCollection(tokens, previousToken, lines);
-    int type = previousToken.getType();
-    if (type == BSLParser.LINE_COMMENT) {
-      lines.add(previousToken);
-    }
-  }
-
-  private static boolean abortSearchComments(Token previousToken, Token currentToken) {
-    int type = previousToken.getType();
-    return !VALID_TOKEN_TYPES_FOR_COMMENTS_SEARCH.contains(type) || isBlankLine(previousToken, currentToken);
-  }
-
-  private static boolean isBlankLine(Token previousToken, Token currentToken) {
-    return previousToken.getType() == BSLParser.WHITE_SPACE
-        && (previousToken.getTokenIndex() == 0
-        || (previousToken.getLine() + 1) != currentToken.getLine());
   }
 
   public MethodInfo getMethodInfo(String link) {

@@ -39,11 +39,11 @@ public class ManualContent {
         .forEach(destinationModel.getPages()::add);
   }
 
-  public boolean contains(Path path){
+  public boolean contains(Path path) {
     return destinationModel.getPages()
         .stream()
         .map(Page::getPath)
-        .anyMatch(it->it.equals(path));
+        .anyMatch(it -> it.equals(path));
   }
 
   private Page createDestinationPage(Page localPage, Path local, Path dest) {

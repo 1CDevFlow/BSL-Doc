@@ -8,8 +8,8 @@ import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import ru.alkoleft.bsl.doc.bsl.BslContext;
 import ru.alkoleft.bsl.doc.options.RenderOptions;
-import ru.alkoleft.bsl.doc.render.handlebars.helpers.Links;
 import ru.alkoleft.bsl.doc.render.handlebars.helpers.Debugger;
+import ru.alkoleft.bsl.doc.render.handlebars.helpers.Links;
 import ru.alkoleft.bsl.doc.render.handlebars.helpers.Shifter;
 import ru.alkoleft.bsl.doc.render.handlebars.helpers.SingleLine;
 

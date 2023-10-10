@@ -25,10 +25,10 @@ public class MethodSymbol {
   Optional<MethodDescription> fullDescription;
 
   List<ParameterDefinition> parameters;
+  Range range;
   @Setter
   @NonFinal
   RegionSymbol region;
-  Range range;
 
   public String getDescription() {
     return fullDescription.map(MethodDescription::getPurposeDescription).orElse("");

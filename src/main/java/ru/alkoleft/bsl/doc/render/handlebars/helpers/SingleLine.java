@@ -14,7 +14,7 @@ public class SingleLine implements Helper<Object> {
     String content;
     if (options.tagType == TagType.SECTION) {
       content = options.fn().toString();
-    }else{
+    } else {
       content = context.toString();
     }
 
