@@ -65,7 +65,13 @@ public class BslContext {
     current = this;
   }
 
-  public Stream<ModuleInfo> getModules() {
+  public Stream<MDOModule> getModules() {
+    return configuration.getOrderedTopMDObjects().get(MDOType.COMMON_MODULE).stream()
+        .map(MDCommonModule.class::cast)
+        .map(it -> it.getModules().get(0));
+  }
+
+  public Stream<ModuleInfo> getModulesInfo() {
     var stream = modules.stream();
 
     if (!filter.getModules().isEmpty()) {

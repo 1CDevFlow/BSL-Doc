@@ -15,6 +15,7 @@ import ru.alkoleft.bsl.doc.render.handlebars.helpers.SingleLine;
 
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
@@ -41,11 +42,19 @@ public class RenderContext {
   }
 
   @SneakyThrows
-  public void renderToFile(String templateName, Context context, Path output){
+  public void renderToFile(String templateName, Context context, Path output) {
     var template = getTemplate(templateName);
     try (var writer = new FileWriter(output.toFile())) {
       template.apply(context, writer);
     }
+  }
+
+  @SneakyThrows
+  public String render(String templateName, Context context) {
+    var template = getTemplate(templateName);
+    var writer = new StringWriter();
+    template.apply(context, writer);
+    return writer.toString();
   }
 
   private Template getTemplate(String name) throws IOException {
@@ -59,7 +68,7 @@ public class RenderContext {
   }
 
   @UtilityClass
-  public static class Factory{
+  public static class Factory {
     public RenderContext create(RenderOptions options) {
       return new RenderContext(options.getOutputFormat().getPath());
     }

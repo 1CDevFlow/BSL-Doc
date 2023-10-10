@@ -3,6 +3,7 @@ package ru.alkoleft.bsl.doc.render;
 import com.github._1c_syntax.mdclasses.mdo.MDSubsystem;
 import lombok.SneakyThrows;
 import ru.alkoleft.bsl.doc.bsl.BslContext;
+import ru.alkoleft.bsl.doc.render.processor.OutputProcessor;
 import ru.alkoleft.bsl.doc.structure.Item;
 import ru.alkoleft.bsl.doc.structure.MDObjectItem;
 import ru.alkoleft.bsl.doc.structure.ModuleItem;
@@ -17,14 +18,14 @@ import java.util.Stack;
 import java.util.stream.Collectors;
 
 public class StructureRender implements StructureVisitor {
-  private final Render render;
+  private final OutputProcessor outputProcessor;
   private final Stack<Path> paths = new Stack<>();
   private final Stack<List<Path>> children = new Stack<>();
   private boolean withRoot = false;
   private int subsystemLevel = 0;
 
-  public StructureRender(Render render) {
-    this.render = render;
+  public StructureRender(OutputProcessor outputProcessor) {
+    this.outputProcessor = outputProcessor;
   }
 
   public void render(List<Item> structure, Path destination) {
@@ -60,8 +61,12 @@ public class StructureRender implements StructureVisitor {
         .map(it -> it.toString().substring(path.toString().length() + 1))
         .collect(Collectors.toList());
     if (!childrenItems.isEmpty()) {
-      render.render((MDSubsystem) item.getObject(), path.resolve("index.md"), subsystemLevel, childrenItems);
-      children.peek().add(path.resolve("index.md"));
+      var itemPath = path.resolve("index.md");
+      if (outputProcessor.needRender(itemPath)) {
+        var content = outputProcessor.getRender().render((MDSubsystem) item.getObject(), subsystemLevel, childrenItems);
+        outputProcessor.save(itemPath, content);
+      }
+      children.peek().add(itemPath);
     }
   }
 
@@ -77,7 +82,10 @@ public class StructureRender implements StructureVisitor {
       Files.createDirectories(path.getParent());
     }
     children.peek().add(path);
-    render.render(moduleContext, path, index);
+    if (outputProcessor.needRender(path)) {
+      var content = outputProcessor.getRender().render(moduleContext, index);
+      outputProcessor.save(path, content);
+    }
   }
 
   @Override
