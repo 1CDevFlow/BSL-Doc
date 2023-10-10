@@ -8,11 +8,11 @@ import picocli.CommandLine.Parameters;
 import ru.alkoleft.bsl.doc.bsl.BslContext;
 import ru.alkoleft.bsl.doc.bsl.Filter;
 import ru.alkoleft.bsl.doc.bsl.symbols.RegionSymbol;
-import ru.alkoleft.bsl.doc.render.Factory;
 import ru.alkoleft.bsl.doc.render.OutputFormat;
 import ru.alkoleft.bsl.doc.render.Render;
 import ru.alkoleft.bsl.doc.render.RenderOptions;
 import ru.alkoleft.bsl.doc.render.StructureRender;
+import ru.alkoleft.bsl.doc.render.handlebars.RenderContext;
 import ru.alkoleft.bsl.doc.structure.Builder;
 
 import java.nio.file.Path;
@@ -52,13 +52,11 @@ public class RenderCommand implements Runnable {
     log.debug("Options: " + options.toString());
 
     var bslContext = new BslContext(sources, filter);
-    var renderContext = Factory.createRenderContext(options);
+    var renderContext = RenderContext.Factory.create(options);
 
     var structure = Builder.build(bslContext);
     Builder.print(structure);
 
     new StructureRender().render(new Render(renderContext), structure, destination);
-//    var render = new SubsystemTreeRender(bslContext, renderContext, destination);
-//    render.render();
   }
 }

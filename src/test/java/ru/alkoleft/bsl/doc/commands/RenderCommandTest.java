@@ -1,0 +1,31 @@
+package ru.alkoleft.bsl.doc.commands;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import ru.alkoleft.bsl.doc.bsl.symbols.RegionSymbol;
+import ru.alkoleft.bsl.doc.render.OutputFormat;
+
+import java.nio.file.Path;
+import java.util.Collections;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+class RenderCommandTest {
+
+  RenderCommand cmd;
+  @BeforeEach
+  void setUp() {
+    cmd = new RenderCommand();
+    cmd.sources = Path.of( "/home/common/develop/repos/open-source/bsldoc/src/test/resources/configuration");
+    cmd.destination = Path.of("/tmp/bsl-doc-fixture");
+    cmd.format = OutputFormat.ConfluenceMarkdown;
+    cmd.onlySubsystems = List.of("ППИ");
+    cmd.regions = List.of(RegionSymbol.PUBLIC_REGION_RU);
+  }
+
+  @Test
+  void run() {
+    cmd.run();
+  }
+}

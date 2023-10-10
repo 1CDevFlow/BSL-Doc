@@ -21,9 +21,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -42,7 +40,7 @@ public class BslContext {
   @Getter
   Filter filter;
 
-  List<ModuleContext> modules = Collections.emptyList();
+  List<ModuleInfo> modules = Collections.emptyList();
 
   Set<MDOType> topObjectsType = Set.of(
       MDOType.COMMON_MODULE,
@@ -67,7 +65,7 @@ public class BslContext {
     current = this;
   }
 
-  public Stream<ModuleContext> getModules() {
+  public Stream<ModuleInfo> getModules() {
     var stream = modules.stream();
 
     if (!filter.getModules().isEmpty()) {
@@ -76,7 +74,7 @@ public class BslContext {
 
     return stream
         .map(this::buildModuleContext)
-        .filter(ModuleContext::isNotEmpty);
+        .filter(ModuleInfo::isNotEmpty);
   }
 
   public Stream<MDSubsystem> getRootSubsystems() {
@@ -114,7 +112,7 @@ public class BslContext {
     return modules.stream().anyMatch(it -> it.getName().equalsIgnoreCase(name));
   }
 
-  public Optional<ModuleContext> getModule(String name) {
+  public Optional<ModuleInfo> getModule(String name) {
     return modules.stream().filter(it -> it.getName().equalsIgnoreCase(name)).findAny();
   }
 
@@ -139,16 +137,17 @@ public class BslContext {
         .collect(Collectors.toList());
   }
 
-  public ModuleContext buildModuleContext(MDCommonModule module) {
+  public ModuleInfo buildModuleContext(MDCommonModule module) {
     var bslModules = module.getModules();
     var bslModule = bslModules.get(0);
     return buildModuleContext(bslModule);
   }
 
-  public ModuleContext buildFilteredModuleContext(MDOModule bslModule) {
+  public ModuleInfo buildFilteredModuleContext(MDOModule bslModule) {
     return buildModuleContext(buildModuleContext(bslModule));
   }
-  public ModuleContext buildModuleContext(MDOModule bslModule) {
+
+  public ModuleInfo buildModuleContext(MDOModule bslModule) {
     var owner = (AbstractMDObjectBSL) bslModule.getOwner();
     log.debug("Parse module: " + owner.getName() + "." + bslModule.getModuleType());
     var srcPath = Path.of(bslModule.getUri());
@@ -164,7 +163,7 @@ public class BslContext {
       throw new RuntimeException(owner.getMdoReference().getMdoRef() + ". Module parsing error", e);
     }
 
-    return ModuleContext.builder()
+    return ModuleInfo.builder()
         .owner(owner)
         .module(bslModule)
         .methods(methods)
@@ -218,7 +217,7 @@ public class BslContext {
     }
   }
 
-  private ModuleContext buildModuleContext(ModuleContext module) {
+  private ModuleInfo buildModuleContext(ModuleInfo module) {
 
     var stream = module.getMethods().stream();
 
@@ -230,14 +229,15 @@ public class BslContext {
       stream = stream.filter(this::regionFilter);
     }
 
-    return ModuleContext.builder()
+    return ModuleInfo.builder()
+        .module(module.getModule())
         .owner(module.getOwner())
-        .methods(stream.collect(Collectors.toList()))
         .description(module.getDescription())
+        .methods(stream.collect(Collectors.toList()))
         .build();
   }
 
-  private boolean checkModule(ModuleContext module) {
+  private boolean checkModule(ModuleInfo module) {
     return true;
   }
 

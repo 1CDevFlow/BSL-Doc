@@ -1,0 +1,54 @@
+# {{moduleType}} `{{#unless isCommonModule}}{{ownerType}}.{{/unless}}{{name}}`
+
+{{~#if description}}
+
+{{links description}}
+
+{{~/if}}
+
+{{~#each methods}}
+
+###### {{name}}({{#each parameters}}{{#if @index}}, {{/if}}{{name}}{{/each}})
+
+{{#if deprecated~}}
+:::caution Устаревший
+:::
+{{~/if}}
+{{~#if description}}{{links description}}{{/if}}
+{{~#if parameters}}
+
+
+{{#each parameters as | parameter|}}
+* `{{parameter.name}}`{{#debug}}Формирование описания параметра {{parameter.name}}{{/debug}}
+    {{~#eq parameter.types.size 1~}}
+    {{~#each parameter.types as | type typeIndex|}} - {{#with type~}}{{#shift 3}}{{#block "confluence-md/value-definition"}}{{/block}}{{/shift}}{{~/with}}
+        {{~else}} - {{links description}}
+    {{~/each}}
+    {{else}}
+    {{~#each parameter.types as | type typeIndex|}}
+    * {{#with type}}{{#shift 3}}{{#block "confluence-md/value-definition"}}{{/block}}{{/shift}}{{~/with}}
+    {{~else}} - {{links description}}
+    {{~/each}}
+    {{/eq}}
+{{~/each}}
+    {{~/if}}
+{{~#if returnedValue}}
+
+*Возвращаемое значение*
+
+{{#with returnedValue}}{{#block "confluence-md/value-definition"}}{{/block}}{{~/with}}
+{{~/if}}
+
+{{~#if examples}}
+
+Примеры:
+
+```bsl
+{{~#each examples}}
+{{this}}
+{{~/each}}
+```
+
+{{/if}}
+
+{{/each}}

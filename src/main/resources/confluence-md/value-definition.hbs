@@ -1,0 +1,11 @@
+{{~#if link~}}
+{{links link}}
+{{~/if}}
+{{~#if parameters}}
+`{{name}}` - {{description}}
+
+{{#each parameters as |parameter| }}{{#with parameter}}
+{{~#shift}}* `{{name}}` - {{#each types as | type|~}}{{#with type}}{{#block "confluence-md/value-definition"}}{{/block}}{{/with}}{{~/each}}{{/shift}}
+{{/with}}{{/each}}
+{{~else}}`{{name}}` - {{#links description}}{{#block "confluence-md/value-definition"}}{{/block}}{{/links}}
+{{~/if}}

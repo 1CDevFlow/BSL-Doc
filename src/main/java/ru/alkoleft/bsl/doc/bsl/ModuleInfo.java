@@ -11,7 +11,7 @@ import java.util.Optional;
 
 @Builder
 @Value
-public class ModuleContext {
+public class ModuleInfo {
   AbstractMDObjectBSL owner;
   MDOModule module;
   List<MethodSymbol> methods;

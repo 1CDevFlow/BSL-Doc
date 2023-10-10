@@ -8,6 +8,6 @@ import ru.alkoleft.bsl.doc.bsl.symbols.MethodSymbol;
 @Builder
 public class MethodInfo {
   MethodSymbol method;
-  ModuleContext module;
+  ModuleInfo module;
   boolean publishing;
 }

@@ -2,11 +2,12 @@ package ru.alkoleft.bsl.doc.render;
 
 import lombok.Getter;
 
+@Getter
 public enum OutputFormat {
   Docusaurus("docusaurus"),
-  Markdown("md");
+  Markdown("md"),
+  ConfluenceMarkdown("confluence-md");
 
-  @Getter
   private final String path;
 
   OutputFormat(String path) {
