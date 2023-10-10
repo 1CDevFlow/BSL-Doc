@@ -17,16 +17,22 @@ import java.util.Stack;
 import java.util.stream.Collectors;
 
 public class StructureRender implements StructureVisitor {
-  Render render;
-  int subsystemLevel = 0;
+  private final Render render;
+  private final Stack<Path> paths = new Stack<>();
+  private final Stack<List<Path>> children = new Stack<>();
+  private boolean withRoot = false;
+  private int subsystemLevel = 0;
 
-  Stack<Path> paths = new Stack<>();
-  Stack<List<Path>> children = new Stack<>();
-
-  boolean withRoot = false;
-
-  public void render(Render render, List<Item> structure, Path destination) {
+  public StructureRender(Render render) {
     this.render = render;
+  }
+
+  public void render(List<Item> structure, Path destination) {
+    paths.clear();
+    children.clear();
+    subsystemLevel = 0;
+    withRoot = structure.size() > 1;
+
     paths.push(destination);
     children.push(new ArrayList<>());
     for (int i = 0; i < structure.size(); i++) {
@@ -36,7 +42,7 @@ public class StructureRender implements StructureVisitor {
 
   @Override
   public void visit(SubsystemItem item, int index) {
-    boolean isRoot = subsystemLevel == 0;
+    var isRoot = subsystemLevel == 0;
     subsystemLevel++;
     children.push(new ArrayList<>());
     Path path;
@@ -50,10 +56,9 @@ public class StructureRender implements StructureVisitor {
       paths.pop();
     }
     subsystemLevel--;
-    List<String> childrenItems =
-        children.pop().stream()
-            .map(it -> it.toString().substring(path.toString().length() + 1))
-            .collect(Collectors.toList());
+    var childrenItems = children.pop().stream()
+        .map(it -> it.toString().substring(path.toString().length() + 1))
+        .collect(Collectors.toList());
     if (!childrenItems.isEmpty()) {
       render.render((MDSubsystem) item.getObject(), path.resolve("index.md"), subsystemLevel, childrenItems);
       children.peek().add(path.resolve("index.md"));
@@ -67,7 +72,7 @@ public class StructureRender implements StructureVisitor {
     if (moduleContext.isEmpty()) {
       return;
     }
-    final var path = paths.peek().resolve(item.getModule().getOwner().getName() + ".md");
+    var path = paths.peek().resolve(item.getModule().getOwner().getName() + ".md");
     if (!Files.exists(path.getParent())) {
       Files.createDirectories(path.getParent());
     }

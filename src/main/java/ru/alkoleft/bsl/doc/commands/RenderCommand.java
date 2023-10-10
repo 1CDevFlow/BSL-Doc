@@ -54,9 +54,9 @@ public class RenderCommand implements Runnable {
     var bslContext = new BslContext(sources, filter);
     var renderContext = RenderContext.Factory.create(options);
 
-    var structure = Builder.build(bslContext);
+    var structure = Builder.build(bslContext, options);
     Builder.print(structure);
 
-    new StructureRender().render(new Render(renderContext), structure, destination);
+    new StructureRender(new Render(renderContext)).render(structure, destination);
   }
 }

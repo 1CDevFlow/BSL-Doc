@@ -3,13 +3,10 @@ package ru.alkoleft.bsl.doc.commands;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import ru.alkoleft.bsl.doc.bsl.symbols.RegionSymbol;
-import ru.alkoleft.bsl.doc.render.OutputFormat;
+import ru.alkoleft.bsl.doc.options.OutputFormat;
 
 import java.nio.file.Path;
-import java.util.Collections;
 import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class RenderCommandTest {
 

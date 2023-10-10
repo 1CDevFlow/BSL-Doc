@@ -1,4 +1,4 @@
-package ru.alkoleft.bsl.doc.render;
+package ru.alkoleft.bsl.doc.options;
 
 import lombok.Builder;
 import lombok.Value;
@@ -7,6 +7,5 @@ import lombok.Value;
 @Value
 public class RenderOptions {
   OutputFormat outputFormat;
-
   boolean subsystemHierarchy;
 }

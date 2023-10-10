@@ -1,4 +1,4 @@
-package ru.alkoleft.bsl.doc.render.handlebars;
+package ru.alkoleft.bsl.doc.render.handlebars.helpers;
 
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
@@ -6,7 +6,7 @@ import com.github.jknack.handlebars.TagType;
 
 import java.io.IOException;
 
-public class SingleLineHelper implements Helper<Object> {
+public class SingleLine implements Helper<Object> {
   @Override
   public Object apply(Object context, Options options) throws IOException {
     var buffer = options.buffer();

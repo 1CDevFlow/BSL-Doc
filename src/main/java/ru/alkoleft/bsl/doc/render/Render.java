@@ -13,9 +13,7 @@ import java.util.List;
 
 @Slf4j
 public class Render {
-
   RenderContext renderContext;
-
   public Render(RenderContext renderContext) {
     this.renderContext = renderContext;
   }

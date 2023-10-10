@@ -2,14 +2,15 @@ package ru.alkoleft.bsl.doc.structure;
 
 import lombok.experimental.UtilityClass;
 import ru.alkoleft.bsl.doc.bsl.BslContext;
+import ru.alkoleft.bsl.doc.options.RenderOptions;
 
 import java.util.List;
 
 @UtilityClass
 public class Builder {
 
-  public List<Item> build(BslContext context) {
-    return new Subsystems(context).buildStructure();
+  public List<Item> build(BslContext context, RenderOptions options) {
+    return new SubsystemsStructureBuilder(context).buildStructure();
   }
 
   public void print(List<Item> structure) {

@@ -1,4 +1,4 @@
-package ru.alkoleft.bsl.doc.render.handlebars;
+package ru.alkoleft.bsl.doc.render.handlebars.helpers;
 
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;

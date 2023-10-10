@@ -7,7 +7,6 @@
   </synonym>
   <includeHelpInContents>true</includeHelpInContents>
   <includeInCommandInterface>true</includeInCommandInterface>
-  <content>CommonModule.СтроковыеФункции</content>
   <subsystems>СтроковыеФункции</subsystems>
   <subsystems>Преобразования</subsystems>
   <parentSubsystem>Subsystem.ППИ</parentSubsystem>

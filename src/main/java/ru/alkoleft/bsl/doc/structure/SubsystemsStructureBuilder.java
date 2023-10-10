@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @AllArgsConstructor
-public class Subsystems {
+public class SubsystemsStructureBuilder {
 
   final BslContext context;
 

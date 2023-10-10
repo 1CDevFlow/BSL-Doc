@@ -1,13 +1,13 @@
 package ru.alkoleft.bsl.doc.render.contexts;
 
 import lombok.Builder;
-import lombok.Getter;
+import lombok.Value;
 import ru.alkoleft.bsl.doc.bsl.symbols.MethodSymbol;
 
 import java.util.List;
 
 @Builder
-@Getter
+@Value
 public class ModuleContext {
   int index;
   String name;
@@ -16,6 +16,5 @@ public class ModuleContext {
   boolean isCommonModule;
   String ownerType;
   String moduleType;
-  List<MethodSymbol>methods;
-
+  List<MethodSymbol> methods;
 }

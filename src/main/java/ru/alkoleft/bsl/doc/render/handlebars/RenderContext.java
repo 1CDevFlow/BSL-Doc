@@ -7,7 +7,11 @@ import com.github.jknack.handlebars.helper.ConditionalHelpers;
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import ru.alkoleft.bsl.doc.bsl.BslContext;
-import ru.alkoleft.bsl.doc.render.RenderOptions;
+import ru.alkoleft.bsl.doc.options.RenderOptions;
+import ru.alkoleft.bsl.doc.render.handlebars.helpers.Links;
+import ru.alkoleft.bsl.doc.render.handlebars.helpers.Debugger;
+import ru.alkoleft.bsl.doc.render.handlebars.helpers.Shifter;
+import ru.alkoleft.bsl.doc.render.handlebars.helpers.SingleLine;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -16,32 +20,30 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class RenderContext {
-
   private final String path;
   private final Handlebars handlebars;
   private final Map<String, Template> loadedTemplates = new HashMap<>();
-
-  private final HandleLinks linksRender;
+  private final Links linksRender;
 
   private RenderContext(String path) {
     this.path = path;
     handlebars = new Handlebars().with(value -> value);
-    handlebars.registerHelper("links", linksRender = new HandleLinks());
+    handlebars.registerHelper("links", linksRender = new Links());
     handlebars.registerHelper("shift", new Shifter());
-    handlebars.registerHelper("debug", new RenderDebugger());
+    handlebars.registerHelper("debug", new Debugger());
+    handlebars.registerHelper("single-line", new SingleLine());
     handlebars.registerHelper("great", ConditionalHelpers.gt);
     handlebars.registerHelper("eq", ConditionalHelpers.eq);
-    handlebars.registerHelper("single-line", new SingleLineHelper());
   }
 
   public void setContext(BslContext context) {
-    linksRender.context = context;
+    linksRender.setContext(context);
   }
 
   @SneakyThrows
   public void renderToFile(String templateName, Context context, Path output){
     var template = getTemplate(templateName);
-    try (FileWriter writer = new FileWriter(output.toFile())) {
+    try (var writer = new FileWriter(output.toFile())) {
       template.apply(context, writer);
     }
   }

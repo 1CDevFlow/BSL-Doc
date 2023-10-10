@@ -1,29 +1,29 @@
-package ru.alkoleft.bsl.doc.render.handlebars;
+package ru.alkoleft.bsl.doc.render.handlebars.helpers;
 
 import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.Helper;
 import com.github.jknack.handlebars.Options;
+import lombok.Setter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import ru.alkoleft.bsl.doc.bsl.BslContext;
-import ru.alkoleft.bsl.doc.bsl.Links;
 
 import java.util.Locale;
 import java.util.regex.Pattern;
 
 @Slf4j
-public class HandleLinks implements Helper<String> {
-  Pattern pattern = Pattern.compile("см\\. (([\\wА-Яа-я\\.\\d]+)\\.)*([\\wА-Яа-я\\d]+)");
-
-  Pattern warningPattern = Pattern.compile("(\\n\\s*\\n|^)(Важно[\\s\\S]+)(\\n\\s*\\n|$)");
-  BslContext context;
+public class Links implements Helper<String> {
+  private final Pattern linkPattern = Pattern.compile("см\\. (([\\wА-Яа-я\\.\\d]+)\\.)*([\\wА-Яа-я\\d]+)");
+  private final Pattern warningPattern = Pattern.compile("(\\n\\s*\\n|^)(Важно[\\s\\S]+)(\\n\\s*\\n|$)");
+  @Setter
+  private BslContext context;
 
   @Override
   public Object apply(String context, Options options) {
-    var matcher = pattern.matcher(context);
+    var matcher = linkPattern.matcher(context);
     String result;
     if (matcher.find()) {
-      result = matcher.replaceAll(matchResult -> replaceTo(matcher.group(0), Links.createLink(matcher.group(2), matcher.group(3)), options));
+      result = matcher.replaceAll(matchResult -> replaceTo(matcher.group(0), ru.alkoleft.bsl.doc.bsl.Links.createLink(matcher.group(2), matcher.group(3)), options));
     } else {
       result = context;
     }
@@ -34,7 +34,7 @@ public class HandleLinks implements Helper<String> {
   }
 
   @SneakyThrows
-  private String replaceTo(String baseValue, Links.Link link, Options options) {
+  private String replaceTo(String baseValue, ru.alkoleft.bsl.doc.bsl.Links.Link link, Options options) {
     var methodInfo = BslContext.getCurrent().getMethodInfo(link);
     if (methodInfo == null || methodInfo.isPublishing() || methodInfo.getMethod() == null) {
       return String.format("[%s](%s)", baseValue, getLink(link));
@@ -53,7 +53,7 @@ public class HandleLinks implements Helper<String> {
     return content;
   }
 
-  private String getLink(Links.Link link) {
+  private String getLink(ru.alkoleft.bsl.doc.bsl.Links.Link link) {
     if (link.getOwnerName() != null && link.getMethodName() != null) {
       return link.getOwnerName() + "#" + link.getMethodName().toLowerCase(Locale.ROOT);
     } else if (link.getOwnerName() != null) {

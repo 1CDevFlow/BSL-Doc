@@ -5,8 +5,8 @@ import lombok.Value;
 
 import java.util.List;
 
-@Value
 @Builder
+@Value
 public class SubsystemContext {
   int index;
   String name;
