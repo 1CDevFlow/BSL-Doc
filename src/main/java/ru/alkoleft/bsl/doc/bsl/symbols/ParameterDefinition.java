@@ -35,6 +35,10 @@ public class ParameterDefinition {
     }
   }
 
+  public boolean isRequired() {
+    return defaultValue.type == ParameterType.EMPTY;
+  }
+
   public enum ParameterType {
     DATETIME,
     BOOLEAN,

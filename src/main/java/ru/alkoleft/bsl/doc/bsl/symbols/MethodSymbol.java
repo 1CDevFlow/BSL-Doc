@@ -64,4 +64,35 @@ public class MethodSymbol {
     }
     return result;
   }
+
+  public String callExample() {
+    var builder = new StringBuilder();
+    if (function) {
+      builder.append("Функция");
+    } else {
+      builder.append("Процедура");
+    }
+    builder.append(" ").append(name).append("(");
+    boolean firstParameter = true;
+    for (var parameter : parameters) {
+      if (firstParameter) {
+        firstParameter = false;
+      } else {
+        builder.append(", ");
+      }
+      if (parameter.isByValue()) {
+        builder.append("Знач ");
+      }
+      builder.append(parameter.getName());
+      if (parameter.getDefaultValue().getType() != ParameterDefinition.ParameterType.EMPTY) {
+        builder.append(" = ").append(parameter.getDefaultValue().getValue());
+      }
+    }
+    builder.append(")");
+    if (isExport()) {
+      builder.append(" Экспорт");
+    }
+
+    return builder.toString();
+  }
 }

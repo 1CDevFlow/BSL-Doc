@@ -1,6 +1,5 @@
 package ru.alkoleft.bsl.doc.content.processor;
 
-import java.io.StringReader;
 import java.util.stream.Collectors;
 
 public class MarkdownTitleCleaner implements TitleCleaner {
