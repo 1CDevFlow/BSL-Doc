@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mdclass:Subsystem xmlns:mdclass="http://g5.1c.ru/v8/dt/metadata/mdclass" uuid="79c7fd45-985c-43b1-b604-767ae5f8209c">
+  <name>СтроковыеФункции</name>
+  <synonym>
+    <key>ru</key>
+    <value>Строковые функции</value>
+  </synonym>
+  <includeHelpInContents>true</includeHelpInContents>
+  <includeInCommandInterface>true</includeInCommandInterface>
+  <content>CommonModule.СтроковыеФункции</content>
+  <parentSubsystem>Subsystem.ППИ.Subsystem.Раздел1</parentSubsystem>
+</mdclass:Subsystem>

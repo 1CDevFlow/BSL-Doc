@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mdclass:Subsystem xmlns:mdclass="http://g5.1c.ru/v8/dt/metadata/mdclass" uuid="a15477b6-a9b1-4a3b-b683-db1170307eab">
+  <name>Преобразования</name>
+  <synonym>
+    <key>ru</key>
+    <value>Преобразования</value>
+  </synonym>
+  <includeHelpInContents>true</includeHelpInContents>
+  <includeInCommandInterface>true</includeInCommandInterface>
+  <content>CommonModule.Преобразования</content>
+  <parentSubsystem>Subsystem.ППИ.Subsystem.Раздел1</parentSubsystem>
+</mdclass:Subsystem>

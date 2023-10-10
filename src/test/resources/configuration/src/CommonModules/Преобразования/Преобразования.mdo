@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mdclass:CommonModule xmlns:mdclass="http://g5.1c.ru/v8/dt/metadata/mdclass" uuid="a5a145ee-7fc9-4b9b-bf4c-17f01028ae27">
+  <name>Преобразования</name>
+  <synonym>
+    <key>ru</key>
+    <value>Преобразования</value>
+  </synonym>
+  <server>true</server>
+</mdclass:CommonModule>
