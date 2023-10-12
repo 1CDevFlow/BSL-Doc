@@ -46,6 +46,10 @@ public class ManualContent {
         .anyMatch(it -> it.equals(path));
   }
 
+  public ContentModel getContentModel() {
+    return destinationModel;
+  }
+
   private Page createDestinationPage(Page localPage, Path local, Path dest) {
     var destPath = dest.resolve(local.relativize(localPage.getPath()));
     return new Page(destPath, localPage.getTitle(), localPage.getType());

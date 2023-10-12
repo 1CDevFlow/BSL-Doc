@@ -12,13 +12,11 @@ import com.github.jknack.handlebars.context.MethodValueResolver;
 import lombok.experimental.UtilityClass;
 import ru.alkoleft.bsl.doc.bsl.ModuleInfo;
 
-import java.util.List;
-
 @UtilityClass
 public class ContextFactory {
 
-  public Context create(ModuleInfo module, int index) {
-    var context = ModuleContext.builder()
+  public ModuleContext create(ModuleInfo module, int index) {
+    return ModuleContext.builder()
         .index(index)
         .name(module.getOwner().getName())
         .present(getPresent(module.getOwner()))
@@ -28,19 +26,16 @@ public class ContextFactory {
         .methods(module.getMethods())
         .description(module.getDescription())
         .build();
-    return createContext(context);
   }
 
-  public Context create(MDSubsystem subsystem, List<String> childrenItems, int index, int level) {
-    var context = SubsystemContext.builder()
+  public SubsystemContext create(MDSubsystem subsystem, int index, int level) {
+    return SubsystemContext.builder()
         .index(index)
         .name(subsystem.getName())
         .present(getPresent(subsystem))
         .description(subsystem.getComment())
-        .children(childrenItems)
         .level(level)
         .build();
-    return createContext(context);
   }
 
   private String getPresent(AbstractMDObjectBase object) {
@@ -51,7 +46,7 @@ public class ContextFactory {
     }
   }
 
-  private Context createContext(Object obj) {
+  public Context createContext(Object obj) {
     return Context.newBuilder(obj)
         .resolver(
             MapValueResolver.INSTANCE,

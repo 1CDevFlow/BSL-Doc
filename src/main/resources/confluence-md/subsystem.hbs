@@ -1,8 +1,8 @@
 # {{#great level 1}}Подсистема {{/great}}{{present}}
-
+{{#if description}}
 {{description}}
-
+{{/if}}
 Содержимое:
 {{#each children as | item|}}
-* [{{item}}]({{item}})
+* [{{item.title}}]({{item.path}})
 {{/each}}

@@ -11,4 +11,8 @@ public class SubsystemItem extends Item {
   public void accept(StructureVisitor visitor, int index) {
     visitor.visit(this, index);
   }
+
+  public MDSubsystem getSubsystem() {
+    return (MDSubsystem) getObject();
+  }
 }

@@ -8,11 +8,12 @@ import picocli.CommandLine.Parameters;
 import ru.alkoleft.bsl.doc.bsl.BslContext;
 import ru.alkoleft.bsl.doc.bsl.Filter;
 import ru.alkoleft.bsl.doc.bsl.symbols.RegionSymbol;
+import ru.alkoleft.bsl.doc.content.processor.TitleProcessor;
 import ru.alkoleft.bsl.doc.manual.ManualContent;
 import ru.alkoleft.bsl.doc.options.MergeStrategy;
 import ru.alkoleft.bsl.doc.options.OutputFormat;
 import ru.alkoleft.bsl.doc.options.RenderOptions;
-import ru.alkoleft.bsl.doc.render.Render;
+import ru.alkoleft.bsl.doc.render.BaseRender;
 import ru.alkoleft.bsl.doc.render.StructureRender;
 import ru.alkoleft.bsl.doc.render.handlebars.RenderContext;
 import ru.alkoleft.bsl.doc.render.processor.OutputProcessor;
@@ -61,6 +62,7 @@ public class RenderCommand implements Runnable {
     log.debug("Merge manual: " + mergeStrategy);
 
     var bslContext = new BslContext(sources, filter);
+    TitleProcessor.Factory.create(options.getOutputFormat());
 
     var manual = new ManualContent(manualDocumentation, destination);
     manual.buildModel(options.getOutputFormat());
@@ -69,9 +71,10 @@ public class RenderCommand implements Runnable {
     var structure = StructureBuilder.Factory.build(bslContext, options);
     StructureBuilder.Factory.print(structure);
 
-    var renderContext = RenderContext.Factory.create(options);
     var processor = OutputProcessor.Factory.create(mergeStrategy);
-    processor.init(new Render(renderContext), options.getOutputFormat(), manual);
-    new StructureRender(processor).render(structure, destination);
+    BaseRender.setContext(RenderContext.Factory.create(options));
+    processor.init(options.getOutputFormat(), manual);
+    var render = new StructureRender(processor, manual.getContentModel());
+    render.render(structure, destination);
   }
 }

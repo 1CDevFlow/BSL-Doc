@@ -6,15 +6,12 @@ import lombok.SneakyThrows;
 import ru.alkoleft.bsl.doc.manual.ManualContent;
 import ru.alkoleft.bsl.doc.options.MergeStrategy;
 import ru.alkoleft.bsl.doc.options.OutputFormat;
-import ru.alkoleft.bsl.doc.render.Render;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
 
 @Getter
 public class OutputProcessor {
-  @Setter
-  protected Render render;
   @Setter
   protected OutputFormat format;
   @Setter
@@ -29,8 +26,7 @@ public class OutputProcessor {
     Files.writeString(itemPath, content);
   }
 
-  public void init(Render render, OutputFormat format, ManualContent manualContent) {
-    this.render = render;
+  public void init(OutputFormat format, ManualContent manualContent) {
     this.format = format;
     this.manualContent = manualContent;
   }
