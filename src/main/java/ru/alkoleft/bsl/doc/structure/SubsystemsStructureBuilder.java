@@ -9,8 +9,7 @@ public class SubsystemsStructureBuilder implements StructureBuilder {
 
   public List<Item> build(BslContext context) {
 
-    return context.getRootSubsystems()
-        .filter(it -> context.getFilter().getRootSubsystems().contains(it.getName()))
+    return context.getRootSubsystems(true)
         .map(it -> Factory.createSubSystemItem(it, context))
         .collect(Collectors.toList());
   }

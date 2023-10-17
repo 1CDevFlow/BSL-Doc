@@ -4,6 +4,7 @@ import com.github._1c_syntax.mdclasses.mdo.AbstractMDObjectBSL;
 import com.github._1c_syntax.mdclasses.mdo.MDSubsystem;
 import lombok.experimental.UtilityClass;
 import ru.alkoleft.bsl.doc.bsl.BslContext;
+import ru.alkoleft.bsl.doc.bsl.helpers.BslFilter;
 
 @UtilityClass
 public class Factory {
@@ -18,7 +19,7 @@ public class Factory {
     var item = new MDObjectItem(owner);
     owner.getModules()
         .stream()
-        .filter(Utils::isManagerModule)
+        .filter(BslFilter::checkModule)
         .map(ModuleItem::new)
         .forEach(item.getChildren()::add);
     return item;

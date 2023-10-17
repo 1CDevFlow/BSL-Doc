@@ -65,7 +65,7 @@ public class StructureRender implements StructureVisitor {
   @Override
   @SneakyThrows
   public void visit(ModuleItem item, int index) {
-    var moduleContext = BslContext.getCurrent().buildFilteredModuleContext(item.getModule());
+    var moduleContext = BslContext.getCurrent().getModuleContext(item.getModule());
     if (moduleContext.isEmpty()) {
       return;
     }

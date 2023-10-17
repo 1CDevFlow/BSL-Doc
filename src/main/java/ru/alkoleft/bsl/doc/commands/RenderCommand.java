@@ -66,7 +66,7 @@ public class RenderCommand implements Runnable {
         .filter(filter)
         .outputOptions(options)
         .manualDocumentation(manualDocumentation)
-        .mergeStrategy(manualMergeStrategy)
+        .manualMergeStrategy(manualMergeStrategy)
         .destination(destination)
         .sources(sources)
         .build();
