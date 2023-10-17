@@ -3,9 +3,12 @@ package ru.alkoleft.bsl.doc.render.handlebars;
 import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.Handlebars;
 import com.github.jknack.handlebars.Template;
+import com.github.jknack.handlebars.cache.ConcurrentMapTemplateCache;
 import com.github.jknack.handlebars.helper.ConditionalHelpers;
+import com.github.jknack.handlebars.io.URLTemplateLoader;
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
+import lombok.extern.slf4j.Slf4j;
 import ru.alkoleft.bsl.doc.bsl.BslContext;
 import ru.alkoleft.bsl.doc.options.OutputOptions;
 import ru.alkoleft.bsl.doc.render.handlebars.helpers.Debugger;
@@ -17,19 +20,29 @@ import ru.alkoleft.bsl.doc.render.handlebars.helpers.SingleLine;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.net.URL;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
+@Slf4j
 public class RenderContext {
-  private final String path;
+  private final URL baseURL;
   private final Handlebars handlebars;
   private final Map<String, Template> loadedTemplates = new HashMap<>();
   private final Links linksRender;
 
   private RenderContext(String path) {
-    this.path = path;
-    handlebars = new Handlebars().with(value -> value);
+    this.baseURL = getClass().getClassLoader().getResource(path);
+    handlebars = new Handlebars()
+        .with(new URLTemplateLoader() {
+          @Override
+          protected URL getResource(String location) throws IOException {
+            return new URL(baseURL + location);
+          }
+        })
+        .with(new ConcurrentMapTemplateCache());
+
     handlebars.registerHelper("links", linksRender = new Links());
     handlebars.registerHelper("mdo-present", new MdoPresent());
     handlebars.registerHelper("shift", new Shifter());
@@ -59,12 +72,12 @@ public class RenderContext {
     return writer.toString();
   }
 
-  private Template getTemplate(String name) throws IOException {
+  @SneakyThrows
+  private Template getTemplate(String name) {
     if (loadedTemplates.containsKey(name)) {
       return loadedTemplates.get(name);
     }
-    var location = String.format("%s/%s", path, name);
-    var template = handlebars.compile(location);
+    var template = handlebars.compile(name);
     loadedTemplates.put(name, template);
     return template;
   }
