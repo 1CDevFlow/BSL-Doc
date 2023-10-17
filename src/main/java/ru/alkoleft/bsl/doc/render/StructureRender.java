@@ -5,7 +5,7 @@ import ru.alkoleft.bsl.doc.bsl.BslContext;
 import ru.alkoleft.bsl.doc.model.ContentModel;
 import ru.alkoleft.bsl.doc.model.PageType;
 import ru.alkoleft.bsl.doc.render.contexts.ContextFactory;
-import ru.alkoleft.bsl.doc.render.processor.OutputProcessor;
+import ru.alkoleft.bsl.doc.render.output.OutputStrategy;
 import ru.alkoleft.bsl.doc.structure.Item;
 import ru.alkoleft.bsl.doc.structure.MDObjectItem;
 import ru.alkoleft.bsl.doc.structure.ModuleItem;
@@ -16,23 +16,25 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Stack;
 
 public class StructureRender implements StructureVisitor {
-  private final OutputProcessor outputProcessor;
+  private final OutputStrategy outputStrategy;
   private final Stack<List<Path>> children = new Stack<>();
   private final ContentModel contentModel;
   private boolean withRoot = false;
   private int subsystemLevel = 0;
   private PathResolver pathResolver;
 
-  public StructureRender(OutputProcessor outputProcessor, ContentModel contentModel) {
-    this.outputProcessor = outputProcessor;
-    this.contentModel = contentModel;
+  public StructureRender(OutputStrategy outputStrategy, ContentModel contentModel) {
+    this.outputStrategy = outputStrategy;
+
+    this.contentModel = Objects.requireNonNullElseGet(contentModel, ContentModel::new);
   }
 
   public void render(List<Item> structure, Path destination) {
-    pathResolver = new PathResolver(destination, outputProcessor.getFormat());
+    pathResolver = new PathResolver(destination, outputStrategy.getFormat());
     children.clear();
     subsystemLevel = 0;
     withRoot = structure.size() > 1;
@@ -58,17 +60,6 @@ public class StructureRender implements StructureVisitor {
       pathResolver.exit();
     }
     subsystemLevel--;
-//    var childrenItems = children.pop().stream()
-//        .map(it -> it.toString().substring(path.toString().length() + 1))
-//        .collect(Collectors.toList());
-//    if (!childrenItems.isEmpty()) {
-//      var itemPath = path.resolve("index.md");
-//      if (outputProcessor.needRender(itemPath)) {
-//        var content = outputProcessor.getRender().render((MDSubsystem) item.getObject(), subsystemLevel, childrenItems);
-//        outputProcessor.save(itemPath, content);
-//      }
-//      children.peek().add(itemPath);
-//    }
   }
 
   @Override
@@ -83,11 +74,11 @@ public class StructureRender implements StructureVisitor {
       Files.createDirectories(path.getParent());
     }
     children.peek().add(path);
-    if (outputProcessor.needRender(path)) {
+    if (outputStrategy.needRender(path)) {
       var context = ContextFactory.create(moduleContext, index);
 
       var content = BslRender.renderModule(moduleContext, index);
-      outputProcessor.save(path, content);
+      outputStrategy.save(path, content);
       contentModel.append(path, PageType.MODULE);
     }
   }
@@ -100,12 +91,12 @@ public class StructureRender implements StructureVisitor {
   private void renderSubsystemPage(SubsystemItem item) {
     var path = pathResolver.getFilePath("index");
 
-    if (outputProcessor.needRender(path)) {
+    if (outputStrategy.needRender(path)) {
       var context = ContextFactory.create(item.getSubsystem(), 0, subsystemLevel);
       context.setContentModel(contentModel);
       context.setOutputPath(path.getParent());
       var content = BslRender.renderSubsystem(context);
-      outputProcessor.save(path, content);
+      outputStrategy.save(path, content);
       contentModel.append(path, PageType.SUBSYSTEM);
     }
   }

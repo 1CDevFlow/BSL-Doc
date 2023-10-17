@@ -24,19 +24,17 @@ public class Factory {
     return item;
   }
 
-  private void fillChildrenObjects(Item item, BslContext context) {
-    context.getSubsystemObjects((MDSubsystem) item.getObject())
+  private void fillChildrenObjects(SubsystemItem item, BslContext context) {
+    context.getSubsystemObjects(item.getSubsystem())
         .map(Factory::createMDObjectItem)
         .filter(it -> !it.getChildren().isEmpty())
         .forEach(item.getChildren()::add);
   }
 
-  private void fillChildrenSubsystems(Item subsystemItem, BslContext context) {
-    context.getChildrenSubsystems((MDSubsystem) subsystemItem.getObject())
-        .forEach(it -> {
-          var item = createSubSystemItem(it, context);
-          subsystemItem.getChildren().add(item);
-        });
+  private void fillChildrenSubsystems(SubsystemItem item, BslContext context) {
+    context.getChildrenSubsystems(item.getSubsystem())
+        .map(it -> createSubSystemItem(it, context))
+        .forEach(item.getChildren()::add);
   }
 
 }

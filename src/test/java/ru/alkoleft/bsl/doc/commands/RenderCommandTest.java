@@ -1,33 +1,32 @@
 package ru.alkoleft.bsl.doc.commands;
 
-import org.junit.jupiter.api.BeforeEach;
+import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import ru.alkoleft.bsl.doc.bsl.symbols.RegionSymbol;
-import ru.alkoleft.bsl.doc.options.MergeStrategy;
+import ru.alkoleft.bsl.doc.options.ManualMergeStrategy;
 import ru.alkoleft.bsl.doc.options.OutputFormat;
 
-import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.util.List;
 
 class RenderCommandTest {
 
-  RenderCommand cmd;
-
-  @BeforeEach
-  void setUp() throws URISyntaxException {
-    cmd = new RenderCommand();
-    cmd.sources = Path.of(getClass().getClassLoader().getResource("configuration").toURI());
-    cmd.destination = Path.of("/tmp/bsl-doc-fixture");
-    cmd.format = OutputFormat.ConfluenceMarkdown;
-    cmd.onlySubsystems = List.of("ППИ");
-    cmd.regions = List.of(RegionSymbol.PUBLIC_REGION_RU);
-    cmd.manualDocumentation = Path.of(getClass().getClassLoader().getResource("docs").toURI());
-    cmd.mergeStrategy = MergeStrategy.MERGE;
-  }
-
   @Test
   void run() {
-    cmd.run();
+    RenderCommand.builder()
+        .sources(getResource("configuration"))
+        .destination(Path.of("/tmp/bsl-doc-fixture"))
+        .format(OutputFormat.ConfluenceMarkdown)
+        .onlySubsystems(List.of("ППИ"))
+        .regions(List.of(RegionSymbol.PUBLIC_REGION_RU))
+        .manualDocumentation(getResource("docs"))
+        .manualMergeStrategy(ManualMergeStrategy.MERGE)
+        .build()
+        .run();
+  }
+
+  @SneakyThrows
+  private Path getResource(String name) {
+    return Path.of(getClass().getClassLoader().getResource(name).toURI());
   }
 }

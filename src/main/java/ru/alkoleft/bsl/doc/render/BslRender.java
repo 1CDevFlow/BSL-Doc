@@ -1,6 +1,5 @@
 package ru.alkoleft.bsl.doc.render;
 
-import com.github._1c_syntax.mdclasses.mdo.MDSubsystem;
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
@@ -22,11 +21,6 @@ public class BslRender {
   public String renderModule(ModuleContext module) {
     log.debug("Render module '{}'", module.getName());
     return BaseRender.render("module", ContextFactory.createContext(module));
-  }
-
-  @SneakyThrows
-  public String renderSubsystem(MDSubsystem subsystem, int level) {
-    return renderSubsystem(ContextFactory.create(subsystem, 0, level));
   }
 
   @SneakyThrows

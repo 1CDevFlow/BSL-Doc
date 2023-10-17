@@ -1,44 +1,43 @@
 package ru.alkoleft.bsl.doc.commands;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.Option;
 import picocli.CommandLine.Parameters;
-import ru.alkoleft.bsl.doc.bsl.BslContext;
+import ru.alkoleft.bsl.doc.AutodocManager;
 import ru.alkoleft.bsl.doc.bsl.Filter;
 import ru.alkoleft.bsl.doc.bsl.symbols.RegionSymbol;
-import ru.alkoleft.bsl.doc.content.processor.TitleProcessor;
-import ru.alkoleft.bsl.doc.manual.ManualContent;
-import ru.alkoleft.bsl.doc.options.MergeStrategy;
+import ru.alkoleft.bsl.doc.options.ManualMergeStrategy;
 import ru.alkoleft.bsl.doc.options.OutputFormat;
-import ru.alkoleft.bsl.doc.options.RenderOptions;
-import ru.alkoleft.bsl.doc.render.BaseRender;
-import ru.alkoleft.bsl.doc.render.StructureRender;
-import ru.alkoleft.bsl.doc.render.handlebars.RenderContext;
-import ru.alkoleft.bsl.doc.render.processor.OutputProcessor;
-import ru.alkoleft.bsl.doc.structure.StructureBuilder;
+import ru.alkoleft.bsl.doc.options.OutputOptions;
 
 import java.nio.file.Path;
 import java.util.List;
 
 @Slf4j
 @Command(helpCommand = true)
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class RenderCommand implements Runnable {
   @Parameters(description = "source")
-  Path sources;
+  private Path sources;
   @Parameters(description = "destination")
-  Path destination;
+  private Path destination;
   @Option(names = {"-f", "--format"}, defaultValue = "Markdown")
-  OutputFormat format;
+  private OutputFormat format;
   @Option(names = {"-s", "--only-subsystems"})
-  List<String> onlySubsystems;
+  private List<String> onlySubsystems;
   @Option(names = {"-r", "--regions"}, split = " ", defaultValue = RegionSymbol.PUBLIC_REGION_RU + " " + RegionSymbol.PUBLIC_REGION_EN)
-  List<String> regions;
+  private List<String> regions;
   @Option(names = {"-m", "--manual-docs"}, description = "Path to manual documentations")
-  Path manualDocumentation;
+  private Path manualDocumentation;
   @Option(names = {"-ms", "--merge-strategy"}, description = "Merge strategy for manual and generated documentation", defaultValue = "NONE")
-  MergeStrategy mergeStrategy;
+  private ManualMergeStrategy manualMergeStrategy;
 
   @SneakyThrows
   @Override
@@ -49,7 +48,7 @@ public class RenderCommand implements Runnable {
     regions.forEach(filterBuilder::region);
     onlySubsystems.forEach(filterBuilder::rootSubsystem);
 
-    var optionsBuilder = RenderOptions.builder()
+    var optionsBuilder = OutputOptions.builder()
         .outputFormat(format)
         .subsystemHierarchy(true);
 
@@ -58,23 +57,22 @@ public class RenderCommand implements Runnable {
 
     log.debug("Filter: " + filter.toString());
     log.debug("Options: " + options.toString());
+    log.debug("Sources: " + sources);
     log.debug("Manual: " + manualDocumentation);
-    log.debug("Merge manual: " + mergeStrategy);
+    log.debug("Output: " + destination);
+    log.debug("Merge manual: " + manualMergeStrategy);
 
-    var bslContext = new BslContext(sources, filter);
-    TitleProcessor.Factory.create(options.getOutputFormat());
+    var manager = AutodocManager.builder()
+        .filter(filter)
+        .outputOptions(options)
+        .manualDocumentation(manualDocumentation)
+        .mergeStrategy(manualMergeStrategy)
+        .destination(destination)
+        .sources(sources)
+        .build();
 
-    var manual = new ManualContent(manualDocumentation, destination);
-    manual.buildModel(options.getOutputFormat());
-    manual.copy();
-
-    var structure = StructureBuilder.Factory.build(bslContext, options);
-    StructureBuilder.Factory.print(structure);
-
-    var processor = OutputProcessor.Factory.create(mergeStrategy);
-    BaseRender.setContext(RenderContext.Factory.create(options));
-    processor.init(options.getOutputFormat(), manual);
-    var render = new StructureRender(processor, manual.getContentModel());
-    render.render(structure, destination);
+    manager.loadData();
+    manager.clearOutput();
+    manager.generateDocumentation();
   }
 }

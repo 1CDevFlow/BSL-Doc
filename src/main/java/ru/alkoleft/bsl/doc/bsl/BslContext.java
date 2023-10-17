@@ -43,16 +43,8 @@ public class BslContext {
   @Getter
   Filter filter;
   List<ModuleInfo> modules = Collections.emptyList();
-  Set<MDOType> topObjectsType = Set.of(
-      MDOType.COMMON_MODULE,
-      MDOType.ENUM,
-      MDOType.CATALOG,
-      MDOType.DOCUMENT,
-      MDOType.ACCOUNTING_REGISTER,
-      MDOType.ACCUMULATION_REGISTER,
-      MDOType.CALCULATION_REGISTER,
-      MDOType.INFORMATION_REGISTER
-  );
+
+  Set<MDOType> topObjectsType = Set.copyOf(MDOType.valuesWithoutChildren());
 
   public BslContext(Path path, Filter filter) {
     this.filter = filter;

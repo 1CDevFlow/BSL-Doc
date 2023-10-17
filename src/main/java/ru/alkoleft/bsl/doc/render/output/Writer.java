@@ -1,4 +1,4 @@
-package ru.alkoleft.bsl.doc.render.processor;
+package ru.alkoleft.bsl.doc.render.output;
 
 import ru.alkoleft.bsl.doc.options.OutputFormat;
 

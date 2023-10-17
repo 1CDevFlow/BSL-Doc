@@ -42,4 +42,9 @@
   <subsystems>Subsystem.ППИ</subsystems>
   <commonModules>CommonModule.Преобразования</commonModules>
   <commonModules>CommonModule.СтроковыеФункции</commonModules>
+  <constants>Constant.Константа</constants>
+  <constants>Constant.Константа1</constants>
+  <constants>Constant.Константа2</constants>
+  <catalogs>Catalog.Справочник1</catalogs>
+  <catalogs>Catalog.Справочник2</catalogs>
 </mdclass:Configuration>

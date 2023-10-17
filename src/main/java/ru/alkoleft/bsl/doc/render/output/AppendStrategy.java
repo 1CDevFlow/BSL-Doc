@@ -1,8 +1,8 @@
-package ru.alkoleft.bsl.doc.render.processor;
+package ru.alkoleft.bsl.doc.render.output;
 
 import java.nio.file.Path;
 
-public class AppendProcessor extends OutputProcessor {
+public class AppendStrategy extends OutputStrategy {
   @Override
   public boolean needRender(Path location) {
     return !manualContent.contains(location);

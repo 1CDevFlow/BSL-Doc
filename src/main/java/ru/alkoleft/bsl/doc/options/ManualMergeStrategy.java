@@ -1,6 +1,6 @@
 package ru.alkoleft.bsl.doc.options;
 
-public enum MergeStrategy {
+public enum ManualMergeStrategy {
   NONE,
   REPLACE,
   APPEND,

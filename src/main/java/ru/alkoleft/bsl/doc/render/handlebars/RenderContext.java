@@ -7,9 +7,10 @@ import com.github.jknack.handlebars.helper.ConditionalHelpers;
 import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import ru.alkoleft.bsl.doc.bsl.BslContext;
-import ru.alkoleft.bsl.doc.options.RenderOptions;
+import ru.alkoleft.bsl.doc.options.OutputOptions;
 import ru.alkoleft.bsl.doc.render.handlebars.helpers.Debugger;
 import ru.alkoleft.bsl.doc.render.handlebars.helpers.Links;
+import ru.alkoleft.bsl.doc.render.handlebars.helpers.MdoPresent;
 import ru.alkoleft.bsl.doc.render.handlebars.helpers.Shifter;
 import ru.alkoleft.bsl.doc.render.handlebars.helpers.SingleLine;
 
@@ -30,6 +31,7 @@ public class RenderContext {
     this.path = path;
     handlebars = new Handlebars().with(value -> value);
     handlebars.registerHelper("links", linksRender = new Links());
+    handlebars.registerHelper("mdo-present", new MdoPresent());
     handlebars.registerHelper("shift", new Shifter());
     handlebars.registerHelper("debug", new Debugger());
     handlebars.registerHelper("single-line", new SingleLine());
@@ -69,7 +71,7 @@ public class RenderContext {
 
   @UtilityClass
   public static class Factory {
-    public RenderContext create(RenderOptions options) {
+    public RenderContext create(OutputOptions options) {
       return new RenderContext(options.getOutputFormat().getPath());
     }
   }

@@ -1,6 +1,5 @@
 package ru.alkoleft.bsl.doc.structure;
 
-
 import ru.alkoleft.bsl.doc.bsl.BslContext;
 
 import java.util.List;
@@ -12,7 +11,7 @@ public class SubsystemsStructureBuilder implements StructureBuilder {
 
     return context.getRootSubsystems()
         .filter(it -> context.getFilter().getRootSubsystems().contains(it.getName()))
-        .map(it -> ru.alkoleft.bsl.doc.structure.Factory.createSubSystemItem(it, context))
+        .map(it -> Factory.createSubSystemItem(it, context))
         .collect(Collectors.toList());
   }
 }

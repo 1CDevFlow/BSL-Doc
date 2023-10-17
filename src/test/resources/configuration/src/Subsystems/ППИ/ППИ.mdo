@@ -7,5 +7,6 @@
   </synonym>
   <includeHelpInContents>true</includeHelpInContents>
   <includeInCommandInterface>true</includeInCommandInterface>
-  <subsystems>Раздел1</subsystems>
+  <subsystems>Прикладные</subsystems>
+  <subsystems>Сервисные</subsystems>
 </mdclass:Subsystem>

@@ -2,7 +2,13 @@
 {{#if description}}
 {{description}}
 {{/if}}
+
+Константы:
+{{#each constants as | item|}}
+* {{mdo-present item}} ({{item.name}})
+{{/each}}
+
 Содержимое:
-{{#each children as | item|}}
+{{#each childrenPages as | item|}}
 * [{{item.title}}]({{item.path}})
 {{/each}}

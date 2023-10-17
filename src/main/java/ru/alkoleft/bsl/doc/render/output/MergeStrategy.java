@@ -1,4 +1,4 @@
-package ru.alkoleft.bsl.doc.render.processor;
+package ru.alkoleft.bsl.doc.render.output;
 
 import com.github.jknack.handlebars.internal.Files;
 import lombok.SneakyThrows;
@@ -10,7 +10,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.regex.Pattern;
 
-public class MergeProcessor extends OutputProcessor {
+public class MergeStrategy extends OutputStrategy {
   private static final Pattern replacePattern = Pattern.compile("^.*generated_content.*$", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
   TitleProcessor titleCleaner;
 

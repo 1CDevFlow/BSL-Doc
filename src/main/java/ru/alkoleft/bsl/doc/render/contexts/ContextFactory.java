@@ -30,6 +30,7 @@ public class ContextFactory {
 
   public SubsystemContext create(MDSubsystem subsystem, int index, int level) {
     return SubsystemContext.builder()
+        .subsystem(subsystem)
         .index(index)
         .name(subsystem.getName())
         .present(getPresent(subsystem))

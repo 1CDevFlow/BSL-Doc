@@ -40,6 +40,9 @@ public class ManualContent {
   }
 
   public boolean contains(Path path) {
+    if (destinationModel == null) {
+      return false;
+    }
     return destinationModel.getPages()
         .stream()
         .map(Page::getPath)
