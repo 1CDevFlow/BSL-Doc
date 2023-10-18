@@ -29,10 +29,7 @@ java.sourceSets["main"].java {
 }
 
 dependencies {
-    // spring
-    implementation("org.springframework.boot:spring-boot-starter")
-    implementation("org.springframework.boot:spring-boot-starter-websocket")
-    implementation("info.picocli:picocli-spring-boot-starter:4.7.1")
+    implementation("info.picocli", "picocli", "4.7.5")
 
     implementation("com.github.1c-syntax", "mdclasses", "develop-SNAPSHOT")
     implementation("com.github.1c-syntax", "utils", "0.5.1")
