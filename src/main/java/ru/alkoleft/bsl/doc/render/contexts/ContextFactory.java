@@ -1,9 +1,9 @@
 package ru.alkoleft.bsl.doc.render.contexts;
 
+import com.github._1c_syntax.bsl.mdo.CommonModule;
+import com.github._1c_syntax.bsl.mdo.MD;
+import com.github._1c_syntax.bsl.mdo.Subsystem;
 import com.github._1c_syntax.bsl.types.ModuleType;
-import com.github._1c_syntax.mdclasses.mdo.AbstractMDObjectBase;
-import com.github._1c_syntax.mdclasses.mdo.MDCommonModule;
-import com.github._1c_syntax.mdclasses.mdo.MDSubsystem;
 import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.context.FieldValueResolver;
 import com.github.jknack.handlebars.context.JavaBeanValueResolver;
@@ -11,6 +11,7 @@ import com.github.jknack.handlebars.context.MapValueResolver;
 import com.github.jknack.handlebars.context.MethodValueResolver;
 import lombok.experimental.UtilityClass;
 import ru.alkoleft.bsl.doc.bsl.ModuleInfo;
+import ru.alkoleft.bsl.doc.bsl.helpers.MDOHelper;
 
 @UtilityClass
 public class ContextFactory {
@@ -19,8 +20,8 @@ public class ContextFactory {
     return ModuleContext.builder()
         .index(index)
         .name(module.getOwner().getName())
-        .present(getPresent(module.getOwner()))
-        .isCommonModule(module.getOwner() instanceof MDCommonModule)
+        .present(MDOHelper.getPresent(module.getOwner()))
+        .isCommonModule(module.getOwner() instanceof CommonModule)
         .ownerType(module.getOwner().getMdoType().getNameRu())
         .moduleType(getPresent(module.getModule().getModuleType()))
         .methods(module.getMethods())
@@ -28,23 +29,15 @@ public class ContextFactory {
         .build();
   }
 
-  public SubsystemContext create(MDSubsystem subsystem, int index, int level) {
+  public SubsystemContext create(Subsystem subsystem, int index, int level) {
     return SubsystemContext.builder()
         .subsystem(subsystem)
         .index(index)
         .name(subsystem.getName())
-        .present(getPresent(subsystem))
+        .present(MDOHelper.getPresent(subsystem))
         .description(subsystem.getComment())
         .level(level)
         .build();
-  }
-
-  private String getPresent(AbstractMDObjectBase object) {
-    if (object.getSynonyms().isEmpty()) {
-      return object.getName();
-    } else {
-      return object.getSynonyms().get(0).getContent();
-    }
   }
 
   public Context createContext(Object obj) {

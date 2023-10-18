@@ -1,8 +1,9 @@
 package ru.alkoleft.bsl.doc.bsl.helpers;
 
+import com.github._1c_syntax.bsl.mdo.Module;
+import com.github._1c_syntax.bsl.mdo.Subsystem;
 import com.github._1c_syntax.bsl.types.ModuleType;
-import com.github._1c_syntax.mdclasses.mdo.MDSubsystem;
-import com.github._1c_syntax.mdclasses.mdo.support.MDOModule;
+import com.github._1c_syntax.bsl.mdo.Module;
 import lombok.Getter;
 import lombok.experimental.UtilityClass;
 import ru.alkoleft.bsl.doc.bsl.Filter;
@@ -49,7 +50,7 @@ public class BslFilter {
     return true;
   }
 
-  public boolean checkModule(MDOModule module) {
+  public boolean checkModule(Module module) {
     return !filter.isOnlyCommonAndManagerModules() || moduleTypes.contains(module.getModuleType());
   }
 
@@ -65,7 +66,7 @@ public class BslFilter {
     return false;
   }
 
-  public boolean checkRootSubsystem(MDSubsystem subsystem) {
+  public boolean checkRootSubsystem(Subsystem subsystem) {
     if (filter.getRootSubsystems().isEmpty()) {
       return true;
     } else {

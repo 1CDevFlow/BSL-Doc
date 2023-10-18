@@ -1,7 +1,7 @@
 package ru.alkoleft.bsl.doc.bsl;
 
-import com.github._1c_syntax.mdclasses.mdo.AbstractMDObjectBSL;
-import com.github._1c_syntax.mdclasses.mdo.support.MDOModule;
+import com.github._1c_syntax.bsl.mdo.MD;
+import com.github._1c_syntax.bsl.mdo.Module;
 import lombok.Builder;
 import lombok.Value;
 import ru.alkoleft.bsl.doc.bsl.symbols.MethodSymbol;
@@ -12,8 +12,8 @@ import java.util.Optional;
 @Builder
 @Value
 public class ModuleInfo {
-  AbstractMDObjectBSL owner;
-  MDOModule module;
+  MD owner;
+  Module module;
   List<MethodSymbol> methods;
   String description;
 

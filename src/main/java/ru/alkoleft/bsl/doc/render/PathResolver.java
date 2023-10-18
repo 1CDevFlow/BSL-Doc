@@ -1,9 +1,8 @@
 package ru.alkoleft.bsl.doc.render;
 
-import com.github._1c_syntax.utils.Lazy;
 import lombok.AllArgsConstructor;
 import ru.alkoleft.bsl.doc.options.OutputFormat;
-
+import com.github._1c_syntax.utils.Lazy;
 import java.nio.file.Path;
 import java.util.Stack;
 

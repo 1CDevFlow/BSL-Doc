@@ -1,7 +1,7 @@
 package ru.alkoleft.bsl.doc.render.contexts;
 
-import com.github._1c_syntax.mdclasses.mdo.MDConstant;
-import com.github._1c_syntax.mdclasses.mdo.MDSubsystem;
+import com.github._1c_syntax.bsl.mdo.Constant;
+import com.github._1c_syntax.bsl.mdo.Subsystem;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -19,23 +19,22 @@ import java.util.stream.Collectors;
 @Getter
 public class SubsystemContext extends BaseContext {
   private final int level;
-  private final MDSubsystem subsystem;
+  private final Subsystem subsystem;
   @Setter
   private ContentModel contentModel;
 
   @Builder
-  public SubsystemContext(int index, String name, String present, String description, Path outputPath, int level, MDSubsystem subsystem) {
+  public SubsystemContext(int index, String name, String present, String description, Path outputPath, int level, Subsystem subsystem) {
     super(index, name, present, description, outputPath);
     this.level = level;
     this.subsystem = subsystem;
   }
 
-  public List<MDConstant> getConstants() {
-    var c = BslContext.getCurrent().getSubsystemObjects(subsystem)
-        .filter(MDConstant.class::isInstance)
-        .map(MDConstant.class::cast)
+  public List<Constant> getConstants() {
+    return BslContext.getCurrent().getSubsystemObjects(subsystem)
+        .filter(Constant.class::isInstance)
+        .map(Constant.class::cast)
         .collect(Collectors.toList());
-    return c;
   }
 
   public List<Page> getChildrenPages() {

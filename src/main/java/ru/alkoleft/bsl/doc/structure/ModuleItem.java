@@ -1,14 +1,14 @@
 package ru.alkoleft.bsl.doc.structure;
 
-import com.github._1c_syntax.mdclasses.mdo.support.MDOModule;
+import com.github._1c_syntax.bsl.mdo.Module;
 
 public class ModuleItem extends Item {
-  public ModuleItem(MDOModule module) {
+  public ModuleItem(Module module) {
     super(module, module.getModuleType().name());
   }
 
-  public MDOModule getModule() {
-    return (MDOModule) getObject();
+  public Module getModule() {
+    return (Module) getObject();
   }
 
   @Override

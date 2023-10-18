@@ -2,6 +2,7 @@ package ru.alkoleft.bsl.doc.render;
 
 import lombok.SneakyThrows;
 import ru.alkoleft.bsl.doc.bsl.BslContext;
+import ru.alkoleft.bsl.doc.bsl.helpers.MDOHelper;
 import ru.alkoleft.bsl.doc.model.ContentModel;
 import ru.alkoleft.bsl.doc.model.PageType;
 import ru.alkoleft.bsl.doc.render.contexts.ContextFactory;
@@ -69,7 +70,7 @@ public class StructureRender implements StructureVisitor {
     if (moduleContext.isEmpty()) {
       return;
     }
-    var path = pathResolver.getFilePath(item.getModule().getOwner().getName());
+    var path = pathResolver.getFilePath(MDOHelper.getOwner(item.getModule()).getName());
     if (!Files.exists(path.getParent())) {
       Files.createDirectories(path.getParent());
     }

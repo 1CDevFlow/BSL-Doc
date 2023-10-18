@@ -1,8 +1,7 @@
 package ru.alkoleft.bsl.doc.bsl.helpers;
 
+import com.github._1c_syntax.bsl.mdo.Module;
 import com.github._1c_syntax.bsl.parser.BSLTokenizer;
-import com.github._1c_syntax.mdclasses.mdo.AbstractMDObjectBSL;
-import com.github._1c_syntax.mdclasses.mdo.support.MDOModule;
 import lombok.extern.slf4j.Slf4j;
 import ru.alkoleft.bsl.doc.bsl.ModuleInfo;
 import ru.alkoleft.bsl.doc.bsl.symbols.MethodSymbol;
@@ -15,8 +14,8 @@ import java.util.stream.Collectors;
 
 @Slf4j
 public class ModuleContextBuilder {
-  public ModuleInfo buildModuleContext(MDOModule bslModule) {
-    var owner = (AbstractMDObjectBSL) bslModule.getOwner();
+  public ModuleInfo buildModuleContext(Module bslModule) {
+    var owner = MDOHelper.getOwner(bslModule);
     log.debug("Parse module: " + owner.getName() + "." + bslModule.getModuleType());
     var srcPath = Path.of(bslModule.getUri());
     List<MethodSymbol> methods;
@@ -39,7 +38,7 @@ public class ModuleContextBuilder {
         .build();
   }
 
-  public ModuleInfo buildFilteredModuleContext(MDOModule bslModule) {
+  public ModuleInfo buildFilteredModuleContext(Module bslModule) {
     return buildModuleContext(buildModuleContext(bslModule));
   }
 

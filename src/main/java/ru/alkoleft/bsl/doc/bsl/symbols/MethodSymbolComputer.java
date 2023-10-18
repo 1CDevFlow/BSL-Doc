@@ -1,8 +1,8 @@
 package ru.alkoleft.bsl.doc.bsl.symbols;
 
-import com.github._1c_syntax.bsl.languageserver.context.symbol.description.MethodDescription;
-import com.github._1c_syntax.bsl.languageserver.utils.Ranges;
-import com.github._1c_syntax.bsl.languageserver.utils.Trees;
+import com.github._1c_syntax.bsl.parser.description.BSLDescriptionReader;
+import com.github._1c_syntax.bsl.parser.description.MethodDescription;
+import com.github._1c_syntax.bsl.parser.description.support.SimpleRange;
 import com.github._1c_syntax.bsl.parser.BSLParser;
 import com.github._1c_syntax.bsl.parser.BSLParserBaseVisitor;
 import com.github._1c_syntax.bsl.parser.BSLTokenizer;
@@ -10,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
-import org.eclipse.lsp4j.Range;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -36,7 +35,7 @@ public class MethodSymbolComputer extends BSLParserBaseVisitor<ParseTree> {
     // Используется постпривязка регионов, тк порядок обхода не соответствует порядку следования объект (в метод заходит раньше региона)
     for (var region : regionData) {
       for (var method : methods) {
-        if (Ranges.containsRange(region.range, method.getRange())) {
+        if (SimpleRange.containsRange(region.range, method.getRange())) {
           method.setRegion(region.region);
         }
       }
@@ -68,7 +67,7 @@ public class MethodSymbolComputer extends BSLParserBaseVisitor<ParseTree> {
       var regionData = regions.pop();
       log.debug("End region: " + regionData.region.getName());
       regionData.end = ctx;
-      regionData.range = Ranges.create(regionData.start, regionData.end);
+      regionData.range = SimpleRange.create(regionData.start.start, regionData.end.stop);
     }
     return super.visitRegionEnd(ctx);
   }
@@ -105,7 +104,7 @@ public class MethodSymbolComputer extends BSLParserBaseVisitor<ParseTree> {
         .fullDescription(description)
         .deprecated(deprecated)
         .parameters(createParameters(paramList, description))
-        .range(Ranges.create(startNode))
+        .range(SimpleRange.create(startNode.getSymbol(), startNode.getSymbol()))
         .build();
     methods.add(method);
   }
@@ -196,13 +195,13 @@ public class MethodSymbolComputer extends BSLParserBaseVisitor<ParseTree> {
       return Optional.empty();
     }
 
-    return Optional.of(new MethodDescription(comments));
+    return Optional.of(BSLDescriptionReader.parseMethodDescription(comments));
   }
 
   private static class RegionData {
     RegionSymbol region;
     BSLParser.RegionStartContext start;
     BSLParser.RegionEndContext end;
-    Range range;
+    SimpleRange range;
   }
 }

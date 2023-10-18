@@ -1,27 +1,30 @@
 package ru.alkoleft.bsl.doc.structure;
 
-import com.github._1c_syntax.mdclasses.mdo.AbstractMDObjectBSL;
-import com.github._1c_syntax.mdclasses.mdo.MDSubsystem;
+import com.github._1c_syntax.bsl.mdo.MD;
+import com.github._1c_syntax.bsl.mdo.ModuleOwner;
+import com.github._1c_syntax.bsl.mdo.Subsystem;
 import lombok.experimental.UtilityClass;
 import ru.alkoleft.bsl.doc.bsl.BslContext;
 import ru.alkoleft.bsl.doc.bsl.helpers.BslFilter;
 
 @UtilityClass
 public class Factory {
-  public Item createSubSystemItem(MDSubsystem subsystem, BslContext context) {
+  public Item createSubSystemItem(Subsystem subsystem, BslContext context) {
     var item = new SubsystemItem(subsystem);
     fillChildrenSubsystems(item, context);
     fillChildrenObjects(item, context);
     return item;
   }
 
-  public Item createMDObjectItem(AbstractMDObjectBSL owner) {
+  public Item createMDObjectItem(MD owner) {
     var item = new MDObjectItem(owner);
-    owner.getModules()
-        .stream()
-        .filter(BslFilter::checkModule)
-        .map(ModuleItem::new)
-        .forEach(item.getChildren()::add);
+    if (owner instanceof ModuleOwner) {
+      ((ModuleOwner) owner).getModules()
+          .stream()
+          .filter(BslFilter::checkModule)
+          .map(ModuleItem::new)
+          .forEach(item.getChildren()::add);
+    }
     return item;
   }
 

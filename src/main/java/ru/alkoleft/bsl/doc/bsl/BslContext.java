@@ -1,13 +1,11 @@
 package ru.alkoleft.bsl.doc.bsl;
 
-import com.github._1c_syntax.bsl.types.MDOType;
-import com.github._1c_syntax.mdclasses.Configuration;
-import com.github._1c_syntax.mdclasses.mdo.AbstractMDObjectBSL;
-import com.github._1c_syntax.mdclasses.mdo.AbstractMDObjectBase;
-import com.github._1c_syntax.mdclasses.mdo.MDSubsystem;
-import com.github._1c_syntax.mdclasses.mdo.support.MDOModule;
-import com.google.common.base.Strings;
-import io.vavr.control.Either;
+import com.github._1c_syntax.bsl.mdclasses.CF;
+import com.github._1c_syntax.bsl.mdclasses.MDClasses;
+import com.github._1c_syntax.bsl.mdo.MD;
+import com.github._1c_syntax.bsl.mdo.Module;
+import com.github._1c_syntax.bsl.mdo.ModuleOwner;
+import com.github._1c_syntax.bsl.mdo.Subsystem;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import ru.alkoleft.bsl.doc.bsl.helpers.BslFilter;
@@ -17,7 +15,6 @@ import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -26,34 +23,31 @@ public class BslContext {
   @Getter
   private static BslContext current;
   @Getter
-  private final Configuration configuration;
-  private final Set<MDOType> topObjectsType = Set.copyOf(MDOType.valuesWithoutChildren());
+  private final CF configuration;
   private final ModuleContextBuilder builder;
   private List<ModuleInfo> modules = Collections.emptyList();
 
   public BslContext(Path path, Filter filter) {
     BslFilter.setFilter(filter);
     builder = new ModuleContextBuilder();
-    configuration = Configuration.create(path);
+    configuration = (CF) MDClasses.createConfiguration(path);
     current = this;
   }
 
-  public Stream<MDOModule> getModules() {
+  public Stream<Module> getModules() {
     return configuration.getChildren().stream()
-        .filter(AbstractMDObjectBSL.class::isInstance)
-        .map(AbstractMDObjectBSL.class::cast)
+        .filter(ModuleOwner.class::isInstance)
+        .map(ModuleOwner.class::cast)
         .flatMap(it -> it.getModules().stream())
         .filter(BslFilter::checkModule);
   }
 
-  public ModuleInfo getModuleContext(MDOModule module) {
+  public ModuleInfo getModuleContext(Module module) {
     return builder.buildFilteredModuleContext(module);
   }
 
-  public Stream<MDSubsystem> getRootSubsystems(boolean filtered) {
-    var stream = configuration.getOrderedTopMDObjects().get(MDOType.SUBSYSTEM)
-        .stream()
-        .map(MDSubsystem.class::cast);
+  public Stream<Subsystem> getRootSubsystems(boolean filtered) {
+    var stream = configuration.getSubsystems().stream();
 
     if (filtered) {
       stream = stream.filter(BslFilter::checkRootSubsystem);
@@ -61,12 +55,8 @@ public class BslContext {
     return stream;
   }
 
-  public Stream<MDSubsystem> getChildrenSubsystems(MDSubsystem parent) {
-    return parent.getChildren().stream()
-        .filter(Either::isRight)
-        .map(Either::get)
-        .filter(MDSubsystem.class::isInstance)
-        .map(MDSubsystem.class::cast);
+  public Stream<Subsystem> getChildrenSubsystems(Subsystem parent) {
+    return parent.getSubsystems().stream();
   }
 
   public boolean contains(String name) {
@@ -77,18 +67,9 @@ public class BslContext {
     return modules.stream().filter(it -> it.getName().equalsIgnoreCase(name)).findAny();
   }
 
-  public Stream<AbstractMDObjectBSL> getSubsystemObjects(MDSubsystem subsystem) {
+  public Stream<MD> getSubsystemObjects(Subsystem subsystem) {
 
-    return configuration.getChildren()
-        .stream()
-        .filter(AbstractMDObjectBSL.class::isInstance)
-        .filter(this::isTopObject)
-        .filter(it -> it.getIncludedSubsystems().contains(subsystem))
-        .map(AbstractMDObjectBSL.class::cast);
-  }
-
-  boolean isTopObject(AbstractMDObjectBase obj) {
-    return topObjectsType.contains(obj.getMdoType());
+    return subsystem.getChildren().stream();
   }
 
   public void load() {
@@ -98,7 +79,7 @@ public class BslContext {
   }
 
   public MethodInfo getMethodInfo(String link) {
-    if (Strings.isNullOrEmpty(link)) {
+    if (link == null || link.isEmpty()) {
       return null;
     }
     var linkInfo = Links.parseLink(link, false);

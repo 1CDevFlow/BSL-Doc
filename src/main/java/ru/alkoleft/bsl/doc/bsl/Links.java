@@ -1,9 +1,9 @@
 package ru.alkoleft.bsl.doc.bsl;
 
-import com.google.common.base.Strings;
 import lombok.AllArgsConstructor;
 import lombok.Value;
 import lombok.experimental.UtilityClass;
+import ru.alkoleft.bsl.doc.bsl.helpers.Strings;
 
 import java.util.regex.Pattern;
 

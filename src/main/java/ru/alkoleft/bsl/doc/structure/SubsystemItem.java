@@ -1,9 +1,9 @@
 package ru.alkoleft.bsl.doc.structure;
 
-import com.github._1c_syntax.mdclasses.mdo.MDSubsystem;
+import com.github._1c_syntax.bsl.mdo.Subsystem;
 
 public class SubsystemItem extends Item {
-  public SubsystemItem(MDSubsystem subsystem) {
+  public SubsystemItem(Subsystem subsystem) {
     super(subsystem, subsystem.getName());
   }
 
@@ -12,7 +12,7 @@ public class SubsystemItem extends Item {
     visitor.visit(this, index);
   }
 
-  public MDSubsystem getSubsystem() {
-    return (MDSubsystem) getObject();
+  public Subsystem getSubsystem() {
+    return (Subsystem) getObject();
   }
 }

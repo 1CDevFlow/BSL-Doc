@@ -25,6 +25,19 @@ class RenderCommandTest {
         .run();
   }
 
+  @Test
+  void runYaxUnit() {
+    RenderCommand.builder()
+        .sources(Path.of("/home/alko/develop/bia/orais/yaxunit/exts/yaxunit"))
+        .destination(Path.of("/tmp/bsl-doc-yaxunit"))
+        .format(OutputFormat.ConfluenceMarkdown)
+        .onlySubsystems(List.of("ЮТДвижок"))
+        .regions(List.of(RegionSymbol.PUBLIC_REGION_RU))
+        .manualMergeStrategy(ManualMergeStrategy.MERGE)
+        .build()
+        .run();
+  }
+
   @SneakyThrows
   private Path getResource(String name) {
     return Path.of(getClass().getClassLoader().getResource(name).toURI());

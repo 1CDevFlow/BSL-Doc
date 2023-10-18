@@ -1,14 +1,14 @@
 package ru.alkoleft.bsl.doc.bsl.symbols;
 
-import com.github._1c_syntax.bsl.languageserver.context.symbol.description.MethodDescription;
-import com.google.common.base.Strings;
+import com.github._1c_syntax.bsl.parser.description.MethodDescription;
+import com.github._1c_syntax.bsl.parser.description.support.SimpleRange;
 import lombok.Builder;
 import lombok.Setter;
 import lombok.Value;
 import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
-import org.eclipse.lsp4j.Range;
 import ru.alkoleft.bsl.doc.bsl.BslContext;
+import ru.alkoleft.bsl.doc.bsl.helpers.Strings;
 
 import java.util.Collections;
 import java.util.List;
@@ -25,7 +25,7 @@ public class MethodSymbol {
   Optional<MethodDescription> fullDescription;
 
   List<ParameterDefinition> parameters;
-  Range range;
+  SimpleRange range;
   @Setter
   @NonFinal
   RegionSymbol region;
@@ -48,7 +48,7 @@ public class MethodSymbol {
     }
   }
 
-  private TypeDescription createTypeDescription(com.github._1c_syntax.bsl.languageserver.context.symbol.description.TypeDescription baseDescription) {
+  private TypeDescription createTypeDescription(com.github._1c_syntax.bsl.parser.description.support.TypeDescription baseDescription) {
     TypeDescription result = null;
     if (!Strings.isNullOrEmpty(baseDescription.getLink())) {
       var methodInfo = BslContext.getCurrent().getMethodInfo(baseDescription.getLink());

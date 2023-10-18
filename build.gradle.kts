@@ -16,6 +16,7 @@ repositories {
     mavenLocal()
     mavenCentral()
     maven(url = "https://jitpack.io")
+    maven(url = "https://s01.oss.sonatype.org/content/repositories/snapshots/")
 }
 
 java {
@@ -33,14 +34,10 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-websocket")
     implementation("info.picocli:picocli-spring-boot-starter:4.7.1")
 
-    implementation("io.github.1c-syntax", "bsl-language-server", "0.20.0")
-
-    implementation("com.github.1c-syntax", "mdclasses", "0.10.3")
-    implementation("io.github.1c-syntax", "bsl-common-library", "f6714e4e")
-    implementation("io.github.1c-syntax", "supportconf", "0.1.1") {
-        exclude("io.github.1c-syntax", "bsl-common-library")
-    }
-    implementation("com.github.1c-syntax", "bsl-parser", "167aaad827322e09ccde4658a71152dad234de4b") {
+    implementation("com.github.1c-syntax", "mdclasses", "develop-SNAPSHOT")
+    implementation("com.github.1c-syntax", "utils", "0.5.1")
+    implementation("io.github.1c-syntax", "supportconf", "0.12.1")
+    implementation("com.github.1c-syntax", "bsl-parser", "develop-SNAPSHOT") {
         exclude("com.tunnelvisionlabs", "antlr4-annotations")
         exclude("com.ibm.icu", "*")
         exclude("org.antlr", "ST4")
@@ -48,6 +45,8 @@ dependencies {
         exclude("org.antlr", "antlr-runtime")
         exclude("org.glassfish", "javax.json")
     }
+
+    implementation("commons-io", "commons-io", "2.14.0")
 
     // template engine
     implementation("com.github.jknack:handlebars:4.3.1")
