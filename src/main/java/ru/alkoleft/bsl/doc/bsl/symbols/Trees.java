@@ -31,6 +31,7 @@ import org.antlr.v4.runtime.Token;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @UtilityClass
 public class Trees {
@@ -57,7 +58,12 @@ public class Trees {
   public static List<Token> getComments(List<Token> tokens, Token token) {
     List<Token> comments = new ArrayList<>();
     fillCommentsCollection(tokens, token, comments);
-    return comments;
+    return comments.stream()
+        .filter(it -> {
+          var text = it.getText();
+          return !text.startsWith("// @skip") && !text.startsWith("// BSLLS:");
+        })
+        .collect(Collectors.toList());
   }
 
   private static void fillCommentsCollection(List<Token> tokens, Token currentToken, List<Token> lines) {

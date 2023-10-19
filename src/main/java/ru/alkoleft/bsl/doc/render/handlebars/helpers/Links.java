@@ -20,17 +20,18 @@ public class Links implements Helper<String> {
 
   @Override
   public Object apply(String context, Options options) {
-    var matcher = linkPattern.matcher(context);
-    String result;
-    if (matcher.find()) {
-      result = matcher.replaceAll(matchResult -> replaceTo(matcher.group(0), ru.alkoleft.bsl.doc.bsl.Links.createLink(matcher.group(2), matcher.group(3)), options));
-    } else {
-      result = context;
-    }
-
-    result = handleWarning(result);
-
-    return result;
+    return context;
+//    var matcher = linkPattern.matcher(context);
+//    String result;
+//    if (matcher.find()) {
+//      result = matcher.replaceAll(matchResult -> replaceTo(matcher.group(0), ru.alkoleft.bsl.doc.bsl.Links.createLink(matcher.group(2), matcher.group(3)), options));
+//    } else {
+//      result = context;
+//    }
+//
+//    result = handleWarning(result);
+//
+//    return result;
   }
 
   @SneakyThrows

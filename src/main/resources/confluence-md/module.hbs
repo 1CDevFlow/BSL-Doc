@@ -29,7 +29,7 @@
 {{~#if returnedValue}}
 
 *Возвращаемое значение*
-{{~#with returnedValue}}{{#block "value-definition"}}{{/block}}{{~/with}}
+{{#with returnedValue~}}{{#block "value-definition"}}{{/block}}{{~/with}}
 {{~/if}}
 {{~#if examples}}
 Примеры:
