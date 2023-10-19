@@ -14,6 +14,7 @@ import ru.alkoleft.bsl.doc.options.OutputOptions;
 import ru.alkoleft.bsl.doc.render.handlebars.helpers.Debugger;
 import ru.alkoleft.bsl.doc.render.handlebars.helpers.Links;
 import ru.alkoleft.bsl.doc.render.handlebars.helpers.MdoPresent;
+import ru.alkoleft.bsl.doc.render.handlebars.helpers.PageLink;
 import ru.alkoleft.bsl.doc.render.handlebars.helpers.Shifter;
 import ru.alkoleft.bsl.doc.render.handlebars.helpers.SingleLine;
 
@@ -43,13 +44,15 @@ public class RenderContext {
         })
         .with(new ConcurrentMapTemplateCache());
 
+    handlebars.registerHelper("great", ConditionalHelpers.gt);
+    handlebars.registerHelper("eq", ConditionalHelpers.eq);
+
     handlebars.registerHelper("links", linksRender = new Links());
     handlebars.registerHelper("mdo-present", new MdoPresent());
     handlebars.registerHelper("shift", new Shifter());
     handlebars.registerHelper("debug", new Debugger());
     handlebars.registerHelper("single-line", new SingleLine());
-    handlebars.registerHelper("great", ConditionalHelpers.gt);
-    handlebars.registerHelper("eq", ConditionalHelpers.eq);
+    handlebars.registerHelper("page-link", new PageLink());
   }
 
   public void setContext(BslContext context) {

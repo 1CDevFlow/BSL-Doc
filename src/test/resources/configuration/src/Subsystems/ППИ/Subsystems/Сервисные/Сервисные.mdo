@@ -3,7 +3,7 @@
   <name>Сервисные</name>
   <synonym>
     <key>ru</key>
-    <value>Раздел 1</value>
+    <value>Сервисные методы</value>
   </synonym>
   <includeHelpInContents>true</includeHelpInContents>
   <includeInCommandInterface>true</includeInCommandInterface>

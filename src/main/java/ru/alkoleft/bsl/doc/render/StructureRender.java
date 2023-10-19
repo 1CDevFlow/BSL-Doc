@@ -4,6 +4,7 @@ import lombok.SneakyThrows;
 import ru.alkoleft.bsl.doc.bsl.BslContext;
 import ru.alkoleft.bsl.doc.bsl.helpers.MDOHelper;
 import ru.alkoleft.bsl.doc.model.ContentModel;
+import ru.alkoleft.bsl.doc.model.Links;
 import ru.alkoleft.bsl.doc.model.PageType;
 import ru.alkoleft.bsl.doc.render.contexts.ContextFactory;
 import ru.alkoleft.bsl.doc.render.output.OutputStrategy;
@@ -15,14 +16,11 @@ import ru.alkoleft.bsl.doc.structure.SubsystemItem;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Stack;
 
 public class StructureRender implements StructureVisitor {
   private final OutputStrategy outputStrategy;
-  private final Stack<List<Path>> children = new Stack<>();
   private final ContentModel contentModel;
   private boolean withRoot = false;
   private int subsystemLevel = 0;
@@ -36,11 +34,9 @@ public class StructureRender implements StructureVisitor {
 
   public void render(List<Item> structure, Path destination) {
     pathResolver = new PathResolver(destination, outputStrategy.getFormat());
-    children.clear();
     subsystemLevel = 0;
     withRoot = structure.size() > 1;
 
-    children.push(new ArrayList<>());
     for (int i = 0; i < structure.size(); i++) {
       structure.get(i).accept(this, i);
     }
@@ -50,7 +46,6 @@ public class StructureRender implements StructureVisitor {
   public void visit(SubsystemItem item, int index) {
     var isRoot = subsystemLevel == 0;
     subsystemLevel++;
-    children.push(new ArrayList<>());
     if (!withRoot && isRoot) {
       item.accentChildren(this);
       renderSubsystemPage(item);
@@ -74,10 +69,8 @@ public class StructureRender implements StructureVisitor {
     if (!Files.exists(path.getParent())) {
       Files.createDirectories(path.getParent());
     }
-    children.peek().add(path);
     if (outputStrategy.needRender(path)) {
-      var context = ContextFactory.create(moduleContext, index);
-
+      Links.setCurrentPath(path);
       var content = BslRender.renderModule(moduleContext, index);
       outputStrategy.save(path, content);
       contentModel.append(path, PageType.MODULE);
@@ -96,6 +89,7 @@ public class StructureRender implements StructureVisitor {
       var context = ContextFactory.create(item.getSubsystem(), 0, subsystemLevel);
       context.setContentModel(contentModel);
       context.setOutputPath(path.getParent());
+      Links.setCurrentPath(path);
       var content = BslRender.renderSubsystem(context);
       outputStrategy.save(path, content);
       contentModel.append(path, PageType.SUBSYSTEM);

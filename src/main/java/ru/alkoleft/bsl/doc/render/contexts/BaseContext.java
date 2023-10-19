@@ -1,13 +1,11 @@
 package ru.alkoleft.bsl.doc.render.contexts;
 
-
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.nio.file.Path;
-
 
 @Getter
 @AllArgsConstructor
