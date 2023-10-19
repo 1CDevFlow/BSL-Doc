@@ -33,9 +33,11 @@ dependencies {
 
     implementation("com.github.1c-syntax", "mdclasses", "develop-SNAPSHOT")
     implementation("com.github.1c-syntax", "utils", "0.5.1")
+    implementation("io.github.1c-syntax", "bsl-common-library", "0.5.0")
     implementation("io.github.1c-syntax", "supportconf", "0.12.1")
     implementation("com.github.1c-syntax", "bsl-parser", "develop-SNAPSHOT") {
         exclude("com.tunnelvisionlabs", "antlr4-annotations")
+        exclude("commons-beanutils", "commons-beanutils")
         exclude("com.ibm.icu", "*")
         exclude("org.antlr", "ST4")
         exclude("org.abego.treelayout", "org.abego.treelayout.core")
@@ -44,6 +46,7 @@ dependencies {
     }
 
     implementation("commons-io", "commons-io", "2.14.0")
+    implementation("ch.qos.logback", "logback-classic", "1.4.11")
 
     // template engine
     implementation("com.github.jknack:handlebars:4.3.1")
