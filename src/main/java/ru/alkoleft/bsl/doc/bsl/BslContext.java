@@ -68,8 +68,10 @@ public class BslContext {
   }
 
   public Stream<MD> getSubsystemObjects(Subsystem subsystem) {
-
-    return subsystem.getChildren().stream();
+    return subsystem.getContent().stream()
+        .map(configuration::findChild)
+        .filter(Optional::isPresent)
+        .map(Optional::get);
   }
 
   public void load() {

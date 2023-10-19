@@ -15,12 +15,12 @@
 {{#each parameters as | parameter|}}
 * `{{parameter.name}}`{{#if required}} (**Обязательный**){{/if}}
     {{~#eq parameter.types.size 1~}}
-    {{~#each parameter.types as | type typeIndex|}} - {{#with type~}}{{#shift 3}}{{block "value-definition"}}{{/shift}}{{~/with}}
-        {{~else}} - {{links description}}
+    {{~#each parameter.types as | type typeIndex|}} - {{#with type~}}{{#shift 3}}{{#block "value-definition"}}{{/block}}{{/shift}}{{~/with}}
+    {{~else}} - {{links description}}
     {{~/each}}
     {{else}}
     {{~#each parameter.types as | type typeIndex|}}
-    * {{#with type}}{{#shift 3}}{{block "value-definition"}}{{/shift}}{{~/with}}
+    * {{#with type}}{{#shift 3}}{{#block "value-definition"}}{{/block}}{{/shift}}{{~/with}}
     {{~else}} - {{links description}}
     {{~/each}}
     {{/eq}}
@@ -30,7 +30,7 @@
 
 *Возвращаемое значение*
 
-{{#with returnedValue}}{{block "value-definition"}}{{~/with}}
+{{#with returnedValue}}{{#block "value-definition"}}{{/block}}{{~/with}}
 {{~/if}}
 
 {{~#if examples}}
