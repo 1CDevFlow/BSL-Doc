@@ -50,7 +50,7 @@ public class AutodocManager {
 
     var processor = OutputStrategy.create(manualMergeStrategy);
     processor.init(outputOptions.getOutputFormat(), manualContent);
-    var render = new StructureRender(processor, manualContent.getContentModel());
+    var render = new StructureRender(outputOptions, processor, manualContent.getContentModel());
 
     BaseRender.setContext(RenderContext.Factory.create(outputOptions));
     render.render(structure, destination);

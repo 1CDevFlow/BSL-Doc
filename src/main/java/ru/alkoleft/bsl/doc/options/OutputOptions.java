@@ -11,4 +11,5 @@ public class OutputOptions {
   OutputFormat outputFormat;
   boolean subsystemHierarchy;
   Path destination;
+  ChildLayout childLayout;
 }

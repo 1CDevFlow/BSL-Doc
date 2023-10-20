@@ -6,6 +6,8 @@ import ru.alkoleft.bsl.doc.bsl.helpers.MDOHelper;
 import ru.alkoleft.bsl.doc.model.ContentModel;
 import ru.alkoleft.bsl.doc.model.Links;
 import ru.alkoleft.bsl.doc.model.PageType;
+import ru.alkoleft.bsl.doc.options.ChildLayout;
+import ru.alkoleft.bsl.doc.options.OutputOptions;
 import ru.alkoleft.bsl.doc.render.contexts.ContextFactory;
 import ru.alkoleft.bsl.doc.render.output.OutputStrategy;
 import ru.alkoleft.bsl.doc.structure.Item;
@@ -25,11 +27,12 @@ public class StructureRender implements StructureVisitor {
   private boolean withRoot = false;
   private int subsystemLevel = 0;
   private PathResolver pathResolver;
+  private OutputOptions outputOptions;
 
-  public StructureRender(OutputStrategy outputStrategy, ContentModel contentModel) {
+  public StructureRender(OutputOptions outputOptions, OutputStrategy outputStrategy, ContentModel contentModel) {
     this.outputStrategy = outputStrategy;
-
     this.contentModel = Objects.requireNonNullElseGet(contentModel, ContentModel::new);
+    this.outputOptions = outputOptions;
   }
 
   public void render(List<Item> structure, Path destination) {
@@ -52,8 +55,13 @@ public class StructureRender implements StructureVisitor {
     } else {
       pathResolver.entrance(item.getName());
       item.accentChildren(this);
-      renderSubsystemPage(item);
-      pathResolver.exit();
+      if (outputOptions.getChildLayout() == ChildLayout.SAME_DIRECTORY) {
+        renderSubsystemPage(item);
+        pathResolver.exit();
+      } else {
+        pathResolver.exit();
+        renderSubsystemPage(item);
+      }
     }
     subsystemLevel--;
   }
@@ -83,16 +91,24 @@ public class StructureRender implements StructureVisitor {
   }
 
   private void renderSubsystemPage(SubsystemItem item) {
-    var path = pathResolver.getFilePath("index");
+    var path = getSubsystemPagePath(item);
 
     if (outputStrategy.needRender(path)) {
       var context = ContextFactory.create(item.getSubsystem(), 0, subsystemLevel);
       context.setContentModel(contentModel);
-      context.setOutputPath(path.getParent());
+      if (outputOptions.getChildLayout() == ChildLayout.SAME_DIRECTORY) {
+        context.setOutputPath(path.getParent());
+      } else {
+        context.setOutputPath(path.getParent().resolve(item.getName()));
+      }
       Links.setCurrentPath(path);
       var content = BslRender.renderSubsystem(context);
       outputStrategy.save(path, content);
       contentModel.append(path, PageType.SUBSYSTEM);
     }
+  }
+
+  private Path getSubsystemPagePath(SubsystemItem item) {
+    return outputOptions.getChildLayout() == ChildLayout.SAME_DIRECTORY ? pathResolver.getFilePath("index") : pathResolver.getFilePath(item.getName());
   }
 }

@@ -11,6 +11,7 @@ import picocli.CommandLine.Parameters;
 import ru.alkoleft.bsl.doc.AutodocManager;
 import ru.alkoleft.bsl.doc.bsl.Filter;
 import ru.alkoleft.bsl.doc.bsl.symbols.RegionSymbol;
+import ru.alkoleft.bsl.doc.options.ChildLayout;
 import ru.alkoleft.bsl.doc.options.ManualMergeStrategy;
 import ru.alkoleft.bsl.doc.options.OutputFormat;
 import ru.alkoleft.bsl.doc.options.OutputOptions;
@@ -38,6 +39,8 @@ public class RenderCommand implements Runnable {
   private Path manualDocumentation;
   @Option(names = {"-ms", "--merge-strategy"}, description = "Merge strategy for manual and generated documentation", defaultValue = "NONE")
   private ManualMergeStrategy manualMergeStrategy;
+  @Option(names = {"-cl", "--child-layout"}, description = "Child pages layout", defaultValue = "SAME_DIRECTORY")
+  private ChildLayout childLayout;
 
   @SneakyThrows
   @Override
@@ -50,7 +53,8 @@ public class RenderCommand implements Runnable {
 
     var optionsBuilder = OutputOptions.builder()
         .outputFormat(format)
-        .subsystemHierarchy(true);
+        .subsystemHierarchy(true)
+        .childLayout(childLayout);
 
     var filter = filterBuilder.build();
     var options = optionsBuilder.build();
