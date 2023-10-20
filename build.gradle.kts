@@ -46,7 +46,8 @@ dependencies {
     }
 
     implementation("commons-io", "commons-io", "2.14.0")
-    implementation("ch.qos.logback", "logback-classic", "1.4.11")
+    implementation("ch.qos.logback:logback-core:1.2.11")
+    runtimeOnly("ch.qos.logback:logback-classic:1.2.11")
 
     // template engine
     implementation("com.github.jknack:handlebars:4.3.1")
