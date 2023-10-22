@@ -19,7 +19,6 @@ import ru.alkoleft.bsl.doc.structure.SubsystemItem;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
-import java.util.Objects;
 
 public class StructureRender implements StructureVisitor {
   private final OutputStrategy outputStrategy;
@@ -27,18 +26,18 @@ public class StructureRender implements StructureVisitor {
   private boolean withRoot = false;
   private int subsystemLevel = 0;
   private PathResolver pathResolver;
-  private OutputOptions outputOptions;
+  private final OutputOptions outputOptions;
 
   public StructureRender(OutputOptions outputOptions, OutputStrategy outputStrategy, ContentModel contentModel) {
     this.outputStrategy = outputStrategy;
-    this.contentModel = Objects.requireNonNullElseGet(contentModel, ContentModel::new);
+    this.contentModel = contentModel;
     this.outputOptions = outputOptions;
   }
 
   public void render(List<Item> structure, Path destination) {
     pathResolver = new PathResolver(destination, outputStrategy.getFormat());
     subsystemLevel = 0;
-    withRoot = structure.size() > 1;
+    withRoot = outputOptions.getChildLayout() == ChildLayout.SUB_DIRECTORY || structure.size() > 1;
 
     for (int i = 0; i < structure.size(); i++) {
       structure.get(i).accept(this, i);
@@ -80,8 +79,8 @@ public class StructureRender implements StructureVisitor {
     if (outputStrategy.needRender(path)) {
       Links.setCurrentPath(path);
       var content = BslRender.renderModule(moduleContext, index);
-      outputStrategy.save(path, content);
-      contentModel.append(path, PageType.MODULE);
+      outputStrategy.save(path, content)
+          .setType(PageType.MODULE);
     }
   }
 
@@ -103,8 +102,8 @@ public class StructureRender implements StructureVisitor {
       }
       Links.setCurrentPath(path);
       var content = BslRender.renderSubsystem(context);
-      outputStrategy.save(path, content);
-      contentModel.append(path, PageType.SUBSYSTEM);
+      outputStrategy.save(path, content)
+          .setType(PageType.SUBSYSTEM);
     }
   }
 

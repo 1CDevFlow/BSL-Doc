@@ -7,6 +7,7 @@ import ru.alkoleft.bsl.doc.bsl.BslContext;
 import ru.alkoleft.bsl.doc.bsl.Filter;
 import ru.alkoleft.bsl.doc.content.processor.TitleProcessor;
 import ru.alkoleft.bsl.doc.manual.ManualContent;
+import ru.alkoleft.bsl.doc.model.ContentModel;
 import ru.alkoleft.bsl.doc.options.ManualMergeStrategy;
 import ru.alkoleft.bsl.doc.options.OutputOptions;
 import ru.alkoleft.bsl.doc.render.BaseRender;
@@ -18,6 +19,7 @@ import ru.alkoleft.bsl.doc.structure.StructureBuilder;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Objects;
 
 public class AutodocManager {
 
@@ -49,8 +51,9 @@ public class AutodocManager {
     StructureBuilder.print(structure);
 
     var processor = OutputStrategy.create(manualMergeStrategy);
-    processor.init(outputOptions.getOutputFormat(), manualContent);
-    var render = new StructureRender(outputOptions, processor, manualContent.getContentModel());
+    var contentModel = Objects.requireNonNullElseGet(manualContent.getContentModel(), ContentModel::new);
+    processor.init(outputOptions.getOutputFormat(), manualContent, contentModel);
+    var render = new StructureRender(outputOptions, processor, contentModel);
 
     BaseRender.setContext(RenderContext.Factory.create(outputOptions));
     render.render(structure, destination);

@@ -39,14 +39,14 @@ public class ManualContent {
         .forEach(destinationModel.getPages()::add);
   }
 
-  public boolean contains(Path path) {
+  public boolean isNotContains(Path path) {
     if (destinationModel == null) {
-      return false;
+      return true;
     }
     return destinationModel.getPages()
         .stream()
         .map(Page::getPath)
-        .anyMatch(it -> it.equals(path));
+        .noneMatch(it -> it.equals(path));
   }
 
   public ContentModel getContentModel() {

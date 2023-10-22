@@ -12,16 +12,16 @@ import java.util.stream.Collectors;
 public class ContentModel {
   List<Page> pages = new ArrayList<>();
 
-  public void append(Path path, PageType type) {
+  public Page append(Path path) {
     var page = pages.stream()
         .filter(it -> path.equals(it.getPath()))
-        .findAny();
+        .findAny()
+        .orElse(null);
 
-    if (page.isEmpty()) {
-      pages.add(new Page(path, null, type));
-    } else {
-      page.get().setType(type);
+    if (page == null) {
+      pages.add(page = new Page(path, null, PageType.UNKNOWN));
     }
+    return page;
   }
 
   public List<Page> getChildrenPages(Path path) {
