@@ -10,7 +10,8 @@ import lombok.SneakyThrows;
 import lombok.experimental.UtilityClass;
 import lombok.extern.slf4j.Slf4j;
 import ru.alkoleft.bsl.doc.bsl.BslContext;
-import ru.alkoleft.bsl.doc.options.OutputOptions;
+import ru.alkoleft.bsl.doc.bsl.helpers.Strings;
+import ru.alkoleft.bsl.doc.render.TemplatesDefinition;
 import ru.alkoleft.bsl.doc.render.handlebars.helpers.Debugger;
 import ru.alkoleft.bsl.doc.render.handlebars.helpers.Links;
 import ru.alkoleft.bsl.doc.render.handlebars.helpers.MdoPresent;
@@ -32,9 +33,11 @@ public class RenderContext {
   private final Handlebars handlebars;
   private final Map<String, Template> loadedTemplates = new HashMap<>();
   private final Links linksRender;
+  private final TemplatesDefinition templatesDefinition;
 
-  private RenderContext(String path) {
-    this.baseURL = getClass().getClassLoader().getResource(path);
+  private RenderContext(TemplatesDefinition templatesDefinition) {
+    this.templatesDefinition = templatesDefinition;
+    this.baseURL = getClass().getClassLoader().getResource(templatesDefinition.getPath());
     handlebars = new Handlebars()
         .with(new URLTemplateLoader() {
           @Override
@@ -80,15 +83,28 @@ public class RenderContext {
     if (loadedTemplates.containsKey(name)) {
       return loadedTemplates.get(name);
     }
-    var template = handlebars.compile(name);
+    Template template;
+    if (Strings.isNullOrEmpty(templatesDefinition.getHeaderTemplate()) && Strings.isNullOrEmpty(templatesDefinition.getFooterTemplate())) {
+      template = handlebars.compile(name);
+    } else {
+      var builder = new StringBuilder();
+      if (!Strings.isNullOrEmpty(templatesDefinition.getHeaderTemplate())) {
+        builder.append(templatesDefinition.getHeaderTemplate()).append('\n');
+      }
+      builder.append(handlebars.getLoader().sourceAt(name).content(handlebars.getCharset()));
+      if (!Strings.isNullOrEmpty(templatesDefinition.getFooterTemplate())) {
+        builder.append('\n').append(templatesDefinition.getFooterTemplate());
+      }
+      template = handlebars.compileInline(builder.toString());
+    }
     loadedTemplates.put(name, template);
     return template;
   }
 
   @UtilityClass
   public static class Factory {
-    public RenderContext create(OutputOptions options) {
-      return new RenderContext(options.getOutputFormat().getPath());
+    public RenderContext create(TemplatesDefinition templatesDefinition) {
+      return new RenderContext(templatesDefinition);
     }
   }
 }

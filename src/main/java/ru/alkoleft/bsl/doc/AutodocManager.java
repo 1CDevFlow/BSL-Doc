@@ -12,6 +12,7 @@ import ru.alkoleft.bsl.doc.options.ManualMergeStrategy;
 import ru.alkoleft.bsl.doc.options.OutputOptions;
 import ru.alkoleft.bsl.doc.render.BaseRender;
 import ru.alkoleft.bsl.doc.render.StructureRender;
+import ru.alkoleft.bsl.doc.render.TemplatesDefinition;
 import ru.alkoleft.bsl.doc.render.handlebars.RenderContext;
 import ru.alkoleft.bsl.doc.render.output.OutputStrategy;
 import ru.alkoleft.bsl.doc.structure.StructureBuilder;
@@ -28,12 +29,14 @@ public class AutodocManager {
   private final ManualMergeStrategy manualMergeStrategy;
   private final ManualContent manualContent;
   private final BslContext bslContext;
+  private final TemplatesDefinition templatesDefinition;
 
   @Builder
-  public AutodocManager(Filter filter, OutputOptions outputOptions, Path sources, Path destination, Path manualDocumentation, ManualMergeStrategy manualMergeStrategy) {
+  public AutodocManager(Filter filter, OutputOptions outputOptions, Path sources, Path destination, Path manualDocumentation, ManualMergeStrategy manualMergeStrategy, String header, String footer) {
     this.destination = destination;
     this.outputOptions = outputOptions;
     this.manualMergeStrategy = manualMergeStrategy;
+    this.templatesDefinition = new TemplatesDefinition(outputOptions.getOutputFormat().getPath(), header, footer);
     manualContent = new ManualContent(manualDocumentation, destination);
     bslContext = new BslContext(sources, filter);
 
@@ -55,7 +58,7 @@ public class AutodocManager {
     processor.init(outputOptions.getOutputFormat(), manualContent, contentModel);
     var render = new StructureRender(outputOptions, processor, contentModel);
 
-    BaseRender.setContext(RenderContext.Factory.create(outputOptions));
+    BaseRender.setContext(RenderContext.Factory.create(templatesDefinition));
     render.render(structure, destination);
   }
 

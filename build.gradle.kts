@@ -12,6 +12,8 @@ version = "0.1.0-SNAPSHOT"
 
 val JUINT_VERSION = "5.8.2"
 
+val JACKSON_VERSION = "2.15.2"
+
 repositories {
     mavenLocal()
     mavenCentral()
@@ -31,7 +33,7 @@ java.sourceSets["main"].java {
 dependencies {
     implementation("info.picocli", "picocli", "4.7.5")
 
-    implementation("com.github.1c-syntax", "mdclasses", "develop-SNAPSHOT")
+    implementation("io.github.1c-syntax", "mdclasses", "develop-2ec3d1b")
     implementation("com.github.1c-syntax", "utils", "0.5.1")
     implementation("io.github.1c-syntax", "bsl-common-library", "0.5.0")
     implementation("io.github.1c-syntax", "supportconf", "0.12.1")
@@ -51,6 +53,13 @@ dependencies {
 
     // template engine
     implementation("com.github.jknack:handlebars:4.3.1")
+    // https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-core
+// https://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind
+    implementation("com.fasterxml.jackson.core:jackson-core:$JACKSON_VERSION")
+    implementation("com.fasterxml.jackson.core:jackson-databind:$JACKSON_VERSION")
+    implementation("com.fasterxml.jackson.core:jackson-annotations:$JACKSON_VERSION")
+
+
 
     testImplementation("org.junit.jupiter:junit-jupiter:$JUINT_VERSION")
     testImplementation("org.junit.jupiter:junit-jupiter-api:$JUINT_VERSION")
