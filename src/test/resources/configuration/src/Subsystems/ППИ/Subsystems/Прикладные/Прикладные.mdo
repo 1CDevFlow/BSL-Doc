@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mdclass:Subsystem xmlns:mdclass="http://g5.1c.ru/v8/dt/metadata/mdclass" uuid="bfb0df3b-5599-4233-98e6-e34875cfeba9">
+  <name>Прикладные</name>
+  <synonym>
+    <key>ru</key>
+    <value>Прикладные объекты</value>
+  </synonym>
+  <includeHelpInContents>true</includeHelpInContents>
+  <includeInCommandInterface>true</includeInCommandInterface>
+  <content>Constant.Константа1</content>
+  <content>Constant.Константа2</content>
+  <subsystems>Документы</subsystems>
+  <subsystems>Справочники</subsystems>
+  <parentSubsystem>Subsystem.ППИ</parentSubsystem>
+</mdclass:Subsystem>

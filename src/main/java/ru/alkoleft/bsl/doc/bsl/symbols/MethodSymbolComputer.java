@@ -1,15 +1,15 @@
 package ru.alkoleft.bsl.doc.bsl.symbols;
 
-import com.github._1c_syntax.bsl.languageserver.context.symbol.description.MethodDescription;
-import com.github._1c_syntax.bsl.languageserver.utils.Ranges;
-import com.github._1c_syntax.bsl.languageserver.utils.Trees;
+import com.github._1c_syntax.bsl.parser.description.BSLDescriptionReader;
+import com.github._1c_syntax.bsl.parser.description.MethodDescription;
+import com.github._1c_syntax.bsl.parser.description.support.SimpleRange;
 import com.github._1c_syntax.bsl.parser.BSLParser;
 import com.github._1c_syntax.bsl.parser.BSLParserBaseVisitor;
 import com.github._1c_syntax.bsl.parser.BSLTokenizer;
+import lombok.extern.slf4j.Slf4j;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
-import org.eclipse.lsp4j.Range;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -19,16 +19,27 @@ import java.util.Optional;
 import java.util.Stack;
 import java.util.stream.Collectors;
 
+@Slf4j
 public class MethodSymbolComputer extends BSLParserBaseVisitor<ParseTree> {
   private final List<MethodSymbol> methods = new ArrayList<>();
   private BSLTokenizer tokenizer;
 
-  Stack<RegionSymbol> regions = new Stack<>();
+  List<RegionData> regionData = new ArrayList<>();
+  Stack<RegionData> regions = new Stack<>();
 
   public List<MethodSymbol> compute(BSLTokenizer tokenizer) {
     this.tokenizer = tokenizer;
     methods.clear();
     visitFile(tokenizer.getAst());
+
+    // Используется постпривязка регионов, тк порядок обхода не соответствует порядку следования объект (в метод заходит раньше региона)
+    for (var region : regionData) {
+      for (var method : methods) {
+        if (SimpleRange.containsRange(region.range, method.getRange())) {
+          method.setRegion(region.region);
+        }
+      }
+    }
     return methods;
   }
 
@@ -36,35 +47,44 @@ public class MethodSymbolComputer extends BSLParserBaseVisitor<ParseTree> {
   public ParseTree visitRegionStart(BSLParser.RegionStartContext ctx) {
     var name = ctx.regionName().getText();
 
-    RegionSymbol region;
+    log.debug("Start region: " + name);
 
+    var data = new RegionData();
+    data.start = ctx;
     if (regions.isEmpty()) {
-      region = new RegionSymbol(name, null);
+      data.region = new RegionSymbol(name, null);
     } else {
-      region = new RegionSymbol(name, regions.peek());
+      data.region = new RegionSymbol(name, regions.peek().region);
     }
-    regions.push(region);
+    regions.push(data);
+    regionData.add(data);
     return super.visitRegionStart(ctx);
   }
 
   @Override
   public ParseTree visitRegionEnd(BSLParser.RegionEndContext ctx) {
-    regions.pop();
+    if (!regions.isEmpty()) {
+      var regionData = regions.pop();
+      log.debug("End region: " + regionData.region.getName());
+      regionData.end = ctx;
+      regionData.range = SimpleRange.create(regionData.start.start, regionData.end.stop);
+    }
     return super.visitRegionEnd(ctx);
   }
 
   @Override
   public ParseTree visitFunction(BSLParser.FunctionContext ctx) {
-    BSLParser.FuncDeclarationContext declaration = ctx.funcDeclaration();
-
-    TerminalNode startNode = declaration.FUNCTION_KEYWORD();
+    var declaration = ctx.funcDeclaration();
+    log.debug("Function: " + declaration.subName().getText());
+    var startNode = declaration.FUNCTION_KEYWORD();
     handleMethod(startNode, declaration.subName().getStart(), declaration.paramList(), true, declaration.EXPORT_KEYWORD() != null);
     return super.visitFunction(ctx);
   }
 
   @Override
   public ParseTree visitProcedure(BSLParser.ProcedureContext ctx) {
-    BSLParser.ProcDeclarationContext declaration = ctx.procDeclaration();
+    var declaration = ctx.procDeclaration();
+    log.debug("Procedure: " + declaration.subName().getText());
 
     TerminalNode startNode = declaration.PROCEDURE_KEYWORD();
     handleMethod(startNode, declaration.subName().getStart(), declaration.paramList(), false, declaration.EXPORT_KEYWORD() != null);
@@ -72,8 +92,8 @@ public class MethodSymbolComputer extends BSLParserBaseVisitor<ParseTree> {
   }
 
   private void handleMethod(TerminalNode startNode, Token subName, BSLParser.ParamListContext paramList, boolean function, boolean export) {
-    Optional<MethodDescription> description = createDescription(startNode.getSymbol());
-    boolean deprecated = description
+    var description = createDescription(startNode.getSymbol());
+    var deprecated = description
         .map(MethodDescription::isDeprecated)
         .orElse(false);
 
@@ -84,7 +104,7 @@ public class MethodSymbolComputer extends BSLParserBaseVisitor<ParseTree> {
         .fullDescription(description)
         .deprecated(deprecated)
         .parameters(createParameters(paramList, description))
-        .region(regions.peek())
+        .range(SimpleRange.create(startNode.getSymbol(), startNode.getSymbol()))
         .build();
     methods.add(method);
   }
@@ -175,6 +195,13 @@ public class MethodSymbolComputer extends BSLParserBaseVisitor<ParseTree> {
       return Optional.empty();
     }
 
-    return Optional.of(new MethodDescription(comments));
+    return Optional.of(BSLDescriptionReader.parseMethodDescription(comments));
+  }
+
+  private static class RegionData {
+    RegionSymbol region;
+    BSLParser.RegionStartContext start;
+    BSLParser.RegionEndContext end;
+    SimpleRange range;
   }
 }

@@ -1,0 +1,16 @@
+# {{#great level 2}}Подсистема {{/great}}{{present}}
+{{~#if description}}
+{{description}}
+{{~/if}}
+{{~#if constants}}
+
+## Константы
+{{#each constants as | item|}}
+* {{mdo-present item}} ({{item.name}})
+{{~/each}}
+{{~/if}}
+
+## Содержимое
+{{#each childrenPages as | item|}}
+* [{{item.title}}]({{page-link item}})
+{{~/each}}

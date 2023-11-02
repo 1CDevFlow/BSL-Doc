@@ -1,0 +1,9 @@
+# {{present}}
+{{~#if description}}
+{{description}}
+{{~/if}}
+
+## Содержимое
+{{#each childrenPages as | item|}}
+* [{{item.title}}]({{page-link item}})
+{{~/each}}
