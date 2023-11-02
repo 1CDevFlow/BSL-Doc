@@ -12,10 +12,13 @@ version = "0.1.0-SNAPSHOT"
 
 val JUINT_VERSION = "5.8.2"
 
+val JACKSON_VERSION = "2.15.2"
+
 repositories {
     mavenLocal()
     mavenCentral()
     maven(url = "https://jitpack.io")
+    maven(url = "https://s01.oss.sonatype.org/content/repositories/snapshots/")
 }
 
 java {
@@ -28,20 +31,18 @@ java.sourceSets["main"].java {
 }
 
 dependencies {
-    // spring
-    implementation("org.springframework.boot:spring-boot-starter")
-    implementation("org.springframework.boot:spring-boot-starter-websocket")
-    implementation("info.picocli:picocli-spring-boot-starter:4.7.1")
 
-    implementation("com.github.1c-syntax", "bsl-language-server", "0.20.0")
+    // CLI
+    implementation("info.picocli", "picocli", "4.7.5")
 
-    implementation("com.github.1c-syntax", "mdclasses", "0.10.3")
-    implementation("io.github.1c-syntax", "bsl-common-library", "f6714e4e")
-    implementation("io.github.1c-syntax", "supportconf", "0.1.1") {
-        exclude("io.github.1c-syntax", "bsl-common-library")
-    }
-    implementation("com.github.1c-syntax", "bsl-parser", "167aaad827322e09ccde4658a71152dad234de4b") {
+    // 1c-syntax
+    implementation("io.github.1c-syntax", "mdclasses", "develop-2ec3d1b")
+    implementation("com.github.1c-syntax", "utils", "0.5.1")
+    implementation("io.github.1c-syntax", "bsl-common-library", "0.5.0")
+    implementation("io.github.1c-syntax", "supportconf", "0.12.1")
+    implementation("com.github.1c-syntax", "bsl-parser", "develop-SNAPSHOT") {
         exclude("com.tunnelvisionlabs", "antlr4-annotations")
+        exclude("commons-beanutils", "commons-beanutils")
         exclude("com.ibm.icu", "*")
         exclude("org.antlr", "ST4")
         exclude("org.abego.treelayout", "org.abego.treelayout.core")
@@ -49,11 +50,21 @@ dependencies {
         exclude("org.glassfish", "javax.json")
     }
 
+    // logging
+    implementation("ch.qos.logback:logback-core:1.2.11")
+    runtimeOnly("ch.qos.logback:logback-classic:1.2.11")
+
+    // config load
+    implementation("com.fasterxml.jackson.core:jackson-core:$JACKSON_VERSION")
+    implementation("com.fasterxml.jackson.core:jackson-databind:$JACKSON_VERSION")
+    implementation("com.fasterxml.jackson.core:jackson-annotations:$JACKSON_VERSION")
+
     // template engine
     implementation("com.github.jknack:handlebars:4.3.1")
-    implementation("org.apache.velocity:velocity-engine-core:2.3")
-    implementation("org.apache.velocity:velocity-tools:2.0")
 
+    implementation("commons-io", "commons-io", "2.14.0")
+
+    // tests
     testImplementation("org.junit.jupiter:junit-jupiter:$JUINT_VERSION")
     testImplementation("org.junit.jupiter:junit-jupiter-api:$JUINT_VERSION")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:$JUINT_VERSION")
@@ -74,40 +85,13 @@ tasks.withType<JavaCompile> {
 }
 
 tasks.jar {
-//    manifest {
-//        attributes["Main-Class"] = "ru.alkoleft.bsl.doc.Main"
-//    }
     enabled = true
     archiveClassifier.set("")
 }
 
 tasks.bootJar {
-//    manifest {
-//        attributes["Main-Class"] = "ru.alkoleft.bsl.doc.Main"
-//    }
     archiveClassifier.set("exec")
 }
-
-tasks {
-    val fatJar = register<Jar>("fatJar") {
-        dependsOn.addAll(listOf("compileJava", "processResources")) // We need this for Gradle optimization to work
-        archiveClassifier.set("standalone") // Naming the jar
-        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-        manifest { attributes(mapOf("Main-Class" to application.mainClass)) } // Provided we set it up in the application plugin configuration
-        val sourcesMain = sourceSets.main.get()
-        val contents = configurations.runtimeClasspath.get()
-            .map { if (it.isDirectory) it else zipTree(it) } +
-                sourcesMain.output
-        from(contents)
-    }
-    build {
-        dependsOn(fatJar) // Trigger fat jar creation during build
-    }
-
-    group = "build"
-}
-
-
 
 publishing {
     repositories {
