@@ -1,7 +1,5 @@
 package ru.alkoleft.bsl.doc.bsl;
 
-import lombok.AllArgsConstructor;
-import lombok.Value;
 import lombok.experimental.UtilityClass;
 import ru.alkoleft.bsl.doc.bsl.helpers.Strings;
 
@@ -9,11 +7,12 @@ import java.util.regex.Pattern;
 
 @UtilityClass
 public class Links {
-  private final Pattern patternWithSee = Pattern.compile("^см\\. (([\\wА-Яа-я\\.\\d]+)\\.)*([\\wА-Яа-я\\d]+)$");
-  private final Pattern pattern = Pattern.compile("^(([\\wА-Яа-я\\.\\d]+)\\.)*([\\wА-Яа-я\\d]+)$");
+  private static final Pattern PATTERN_WITH_SEE =
+    Pattern.compile("^см\\. (([\\wА-Яа-я\\.\\d]+)\\.)*([\\wА-Яа-я\\d]+)$");
+  private static final Pattern PATTERN = Pattern.compile("^(([\\wА-Яа-я\\.\\d]+)\\.)*([\\wА-Яа-я\\d]+)$");
 
   public Link parseLink(String link, boolean withSee) {
-    var matcher = (withSee ? patternWithSee : pattern).matcher(link);
+    var matcher = (withSee ? PATTERN_WITH_SEE : PATTERN).matcher(link);
     if (matcher.find()) {
       return createLink(matcher.group(2), matcher.group(3));
     }
@@ -32,12 +31,7 @@ public class Links {
     }
   }
 
-  @Value
-  @AllArgsConstructor
-  public static class Link {
-    String ownerName;
-    String methodName;
-
+  public record Link(String ownerName, String methodName) {
     public String getFullName() {
       if (Strings.isNullOrEmpty(ownerName)) {
         return methodName;

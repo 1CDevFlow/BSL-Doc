@@ -23,11 +23,24 @@ public class SubsystemContext extends BaseContext {
   @Setter
   private ContentModel contentModel;
 
+  /**
+   * Описание подсистемы
+   */
+  private final String explanation;
+
   @Builder
-  public SubsystemContext(int index, String name, String present, String description, Path outputPath, int level, Subsystem subsystem) {
+  public SubsystemContext(int index,
+                          String name,
+                          String present,
+                          String description,
+                          Path outputPath,
+                          int level,
+                          Subsystem subsystem,
+                          String explanation) {
     super(index, name, present, description, outputPath);
     this.level = level;
     this.subsystem = subsystem;
+    this.explanation = explanation;
   }
 
   public List<Constant> getConstants() {

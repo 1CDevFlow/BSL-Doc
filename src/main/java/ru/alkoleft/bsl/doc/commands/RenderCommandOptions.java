@@ -2,7 +2,6 @@ package ru.alkoleft.bsl.doc.commands;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
-import lombok.Getter;
 import lombok.SneakyThrows;
 import ru.alkoleft.bsl.doc.bsl.symbols.RegionSymbol;
 import ru.alkoleft.bsl.doc.options.ChildLayout;
@@ -48,7 +47,7 @@ public class RenderCommandOptions {
     }
   }
 
-  @Getter
+  @Data
   public static class PageBlock {
     private Path path;
     private String content;

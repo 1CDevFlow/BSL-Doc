@@ -1,21 +1,21 @@
 package ru.alkoleft.bsl.doc.structure;
 
 import ru.alkoleft.bsl.doc.bsl.BslContext;
+import ru.alkoleft.bsl.doc.options.OutputHierarchy;
 import ru.alkoleft.bsl.doc.options.OutputOptions;
 
 import java.util.List;
+import java.util.Objects;
 
 public interface StructureBuilder {
 
   List<Item> build(BslContext context);
 
   static StructureBuilder builder(OutputOptions options) {
-    switch (options.getHierarchy()) {
-      case SUBSYSTEM:
-        return new SubsystemsStructureBuilder();
-      default:
-        return new FlatStructureBuilder();
+    if (Objects.requireNonNull(options.getHierarchy()) == OutputHierarchy.SUBSYSTEM) {
+      return new SubsystemsStructureBuilder();
     }
+    return new FlatStructureBuilder();
   }
 
   static void print(List<Item> structure) {

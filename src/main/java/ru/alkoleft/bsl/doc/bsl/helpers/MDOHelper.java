@@ -4,7 +4,6 @@ import com.github._1c_syntax.bsl.mdo.CommonModule;
 import com.github._1c_syntax.bsl.mdo.MD;
 import com.github._1c_syntax.bsl.mdo.Module;
 import com.github._1c_syntax.bsl.mdo.children.ObjectModule;
-import com.github._1c_syntax.bsl.types.MdoReference;
 import com.github._1c_syntax.bsl.types.ModuleType;
 import lombok.experimental.UtilityClass;
 import ru.alkoleft.bsl.doc.bsl.BslContext;
@@ -33,26 +32,16 @@ public class MDOHelper {
   }
 
   public String getPresent(ModuleType moduleType) {
-    switch (moduleType) {
-      case ManagerModule:
-        return "Модуль менеджера";
-      case BotModule:
-      case ObjectModule:
-        return "Модуль объекта";
-      case HTTPServiceModule:
-        return "Модуль http-сервиса";
-      case WEBServiceModule:
-        return "Модуль web-сервиса";
-      case CommonModule:
-        return "Модуль";
-      case CommandModule:
-        return "Модуль команды";
-      case RecordSetModule:
-        return "Модуль набора записей";
-      case ValueManagerModule:
-        return "Модуль менеджера значений";
-      default:
-        return moduleType.name();
-    }
+    return switch (moduleType) {
+      case ManagerModule -> "Модуль менеджера";
+      case BotModule, ObjectModule -> "Модуль объекта";
+      case HTTPServiceModule -> "Модуль http-сервиса";
+      case WEBServiceModule -> "Модуль web-сервиса";
+      case CommonModule -> "Модуль";
+      case CommandModule -> "Модуль команды";
+      case RecordSetModule -> "Модуль набора записей";
+      case ValueManagerModule -> "Модуль менеджера значений";
+      default -> moduleType.name();
+    };
   }
 }

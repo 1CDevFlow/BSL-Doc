@@ -80,7 +80,7 @@ public class StructureRender implements StructureVisitor {
       Links.setCurrentPath(path);
       var content = BslRender.renderModule(moduleContext, index);
       outputStrategy.save(path, content)
-          .setType(PageType.MODULE);
+        .setType(PageType.MODULE);
     }
   }
 
@@ -103,11 +103,13 @@ public class StructureRender implements StructureVisitor {
       Links.setCurrentPath(path);
       var content = BslRender.renderSubsystem(context);
       outputStrategy.save(path, content)
-          .setType(PageType.SUBSYSTEM);
+        .setType(PageType.SUBSYSTEM);
     }
   }
 
   private Path getSubsystemPagePath(SubsystemItem item) {
-    return outputOptions.getChildLayout() == ChildLayout.SAME_DIRECTORY ? pathResolver.getFilePath("index") : pathResolver.getFilePath(item.getName());
+    return outputOptions.getChildLayout() == ChildLayout.SAME_DIRECTORY
+      ? pathResolver.getFilePath("index")
+      : pathResolver.getFilePath(item.getName());
   }
 }

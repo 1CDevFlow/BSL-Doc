@@ -4,9 +4,9 @@ import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
 import ru.alkoleft.bsl.doc.bsl.symbols.RegionSymbol;
-import ru.alkoleft.bsl.doc.options.ChildLayout;
 import ru.alkoleft.bsl.doc.options.ManualMergeStrategy;
 import ru.alkoleft.bsl.doc.options.OutputFormat;
+import ru.alkoleft.bsl.doc.options.OutputHierarchy;
 
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -17,36 +17,37 @@ class RenderCommandTest {
   @Test
   void run() {
     RenderCommand.builder()
-        .sources(getResource("configuration"))
-        .destination(Path.of("/tmp/bsl-doc-fixture"))
-        .format(OutputFormat.ConfluenceMarkdown)
-        .onlySubsystems(List.of("ППИ"))
-        .regions(List.of(RegionSymbol.PUBLIC_REGION_RU))
-        .manualDocumentation(getResource("docs"))
-        .manualMergeStrategy(ManualMergeStrategy.MERGE)
-        .build()
-        .run();
+      .sources(getResource("configuration"))
+      .destination(Path.of("c:\\tmp\\bsl-doc-fixture"))
+      .format(OutputFormat.ConfluenceMarkdown)
+      .onlySubsystems(List.of("ППИ"))
+      .regions(List.of(RegionSymbol.PUBLIC_REGION_RU))
+      .manualDocumentation(getResource("docs"))
+      .manualMergeStrategy(ManualMergeStrategy.MERGE)
+      .hierarchy(OutputHierarchy.SUBSYSTEM)
+      .build()
+      .run();
   }
 
   @SneakyThrows
   @Test
   void runFromFile(@TempDir Path tempDir) {
     var config = String.format(
-        "{\"subsystems\": [\"ППИ\"]," +
+      "{\"subsystems\": [\"ППИ\"]," +
         "\"childLayout\": \"SUB_DIRECTORY\"," +
         "\"manualDocs\": \"%s\"," +
         "\"mergeStrategy\": \"MERGE\"," +
         "\"format\": \"ConfluenceMarkdown\"," +
-        "\"header\": {\"content\": \"__{{present}}__\\n\"}}", getResource("docs"));
+        "\"header\": {\"content\": \"__{{present}}__\\n\"}}", getResource("docs").toString().replace("\\", "\\\\"));
     var configPath = tempDir.resolve("config.json");
     Files.writeString(configPath, config);
 
     RenderCommand.builder()
-        .sources(getResource("configuration"))
-        .destination(tempDir.resolve("bsl-doc-fixture"))
-        .optionsFile(configPath)
-        .build()
-        .run();
+      .sources(getResource("configuration"))
+      .destination(tempDir.resolve("bsl-doc-fixture"))
+      .optionsFile(configPath)
+      .build()
+      .run();
   }
 
   @SneakyThrows

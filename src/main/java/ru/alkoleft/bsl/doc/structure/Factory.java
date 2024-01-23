@@ -18,27 +18,27 @@ public class Factory {
 
   public Item createMDObjectItem(MD owner) {
     var item = new MDObjectItem(owner);
-    if (owner instanceof ModuleOwner) {
-      ((ModuleOwner) owner).getModules()
-          .stream()
-          .filter(BslFilter::checkModule)
-          .map(ModuleItem::new)
-          .forEach(item.getChildren()::add);
+    if (owner instanceof ModuleOwner moduleOwner) {
+      moduleOwner.getModules()
+        .stream()
+        .filter(BslFilter::checkModule)
+        .map(ModuleItem::new)
+        .forEach(item.getChildren()::add);
     }
     return item;
   }
 
   private void fillChildrenObjects(SubsystemItem item, BslContext context) {
     context.getSubsystemObjects(item.getSubsystem())
-        .map(Factory::createMDObjectItem)
-        .filter(it -> !it.getChildren().isEmpty())
-        .forEach(item.getChildren()::add);
+      .map(Factory::createMDObjectItem)
+      .filter(it -> !it.getChildren().isEmpty())
+      .forEach(item.getChildren()::add);
   }
 
   private void fillChildrenSubsystems(SubsystemItem item, BslContext context) {
     context.getChildrenSubsystems(item.getSubsystem())
-        .map(it -> createSubSystemItem(it, context))
-        .forEach(item.getChildren()::add);
+      .map(it -> createSubSystemItem(it, context))
+      .forEach(item.getChildren()::add);
   }
 
 }

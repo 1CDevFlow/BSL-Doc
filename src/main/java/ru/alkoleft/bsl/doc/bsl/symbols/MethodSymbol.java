@@ -7,6 +7,7 @@ import lombok.Setter;
 import lombok.Value;
 import lombok.experimental.NonFinal;
 import lombok.extern.slf4j.Slf4j;
+import org.antlr.v4.runtime.misc.Nullable;
 import ru.alkoleft.bsl.doc.bsl.BslContext;
 import ru.alkoleft.bsl.doc.bsl.helpers.Strings;
 
@@ -38,8 +39,13 @@ public class MethodSymbol {
     return fullDescription.map(MethodDescription::getExamples).orElse(Collections.emptyList());
   }
 
+  @Nullable
   public TypeDescription getReturnedValue() {
-    var result = fullDescription.map(MethodDescription::getReturnedValue).filter(it -> !it.isEmpty()).map(it -> it.get(0)).orElse(null);
+    var result = fullDescription
+      .map(MethodDescription::getReturnedValue)
+      .filter(it -> !it.isEmpty())
+      .map(it -> it.get(0))
+      .orElse(null);
 
     if (result != null) {
       return createTypeDescription(result);
@@ -60,7 +66,11 @@ public class MethodSymbol {
       }
     }
     if (result == null) {
-      result = new TypeDescription(baseDescription.getName(), baseDescription.getDescription(), baseDescription.getParameters(), Strings.isNullOrEmpty(baseDescription.getLink()) ? null : "см. " + baseDescription.getLink(), baseDescription.isHyperlink());
+      result = new TypeDescription(baseDescription.getName(),
+        baseDescription.getDescription(),
+        baseDescription.getParameters(),
+        Strings.isNullOrEmpty(baseDescription.getLink()) ? null : "см. " + baseDescription.getLink(),
+        baseDescription.isHyperlink());
     }
     return result;
   }

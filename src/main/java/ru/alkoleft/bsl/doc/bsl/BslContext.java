@@ -36,10 +36,10 @@ public class BslContext {
 
   public Stream<Module> getModules() {
     return configuration.getChildren().stream()
-        .filter(ModuleOwner.class::isInstance)
-        .map(ModuleOwner.class::cast)
-        .flatMap(it -> it.getModules().stream())
-        .filter(BslFilter::checkModule);
+      .filter(ModuleOwner.class::isInstance)
+      .map(ModuleOwner.class::cast)
+      .flatMap(it -> it.getModules().stream())
+      .filter(BslFilter::checkModule);
   }
 
   public ModuleInfo getModuleContext(Module module) {
@@ -69,15 +69,15 @@ public class BslContext {
 
   public Stream<MD> getSubsystemObjects(Subsystem subsystem) {
     return subsystem.getContent().stream()
-        .map(configuration::findChild)
-        .filter(Optional::isPresent)
-        .map(Optional::get);
+      .map(configuration::findChild)
+      .filter(Optional::isPresent)
+      .map(Optional::get);
   }
 
   public void load() {
     modules = getModules()
-        .map(builder::buildModuleContext)
-        .collect(Collectors.toList());
+      .map(builder::buildModuleContext)
+      .collect(Collectors.toList());
   }
 
   public MethodInfo getMethodInfo(String link) {
@@ -90,18 +90,21 @@ public class BslContext {
 
   public MethodInfo getMethodInfo(Links.Link link) {
 
-    if (link == null || link.getOwnerName() == null || link.getMethodName() == null) {
+    if (link == null || link.ownerName() == null || link.methodName() == null) {
       return null;
     }
 
-    var module = getModule(link.getOwnerName());
-    var method = module.flatMap(it -> it.getMethod(link.getMethodName()));
+    var module = getModule(link.ownerName());
+    var method = module.flatMap(it -> it.getMethod(link.methodName()));
 
     return MethodInfo.builder()
-        .module(module.orElse(null))
-        .method(method.orElse(null))
-        .publishing(module.isPresent() && method.isPresent() && BslFilter.checkModule(module.get()) && BslFilter.checkMethod(method.get()))
-        .build();
+      .module(module.orElse(null))
+      .method(method.orElse(null))
+      .publishing(module.isPresent()
+        && method.isPresent()
+        && BslFilter.checkModule(module.get())
+        && BslFilter.checkMethod(method.get()))
+      .build();
   }
 
 }

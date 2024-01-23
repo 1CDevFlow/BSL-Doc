@@ -1,9 +1,7 @@
 package ru.alkoleft.bsl.doc.render.contexts;
 
 import com.github._1c_syntax.bsl.mdo.CommonModule;
-import com.github._1c_syntax.bsl.mdo.MD;
 import com.github._1c_syntax.bsl.mdo.Subsystem;
-import com.github._1c_syntax.bsl.types.ModuleType;
 import com.github.jknack.handlebars.Context;
 import com.github.jknack.handlebars.context.FieldValueResolver;
 import com.github.jknack.handlebars.context.JavaBeanValueResolver;
@@ -18,36 +16,37 @@ public class ContextFactory {
 
   public ModuleContext create(ModuleInfo module, int index) {
     return ModuleContext.builder()
-        .index(index)
-        .name(module.getOwner().getName())
-        .present(MDOHelper.getPresent(module.getOwner()))
-        .isCommonModule(module.getOwner() instanceof CommonModule)
-        .ownerType(module.getOwner().getMdoType().getNameRu())
-        .moduleType(MDOHelper.getPresent(module.getModule().getModuleType()))
-        .methods(module.getMethods())
-        .description(module.getDescription())
-        .build();
+      .index(index)
+      .name(module.getOwner().getName())
+      .present(MDOHelper.getPresent(module.getOwner()))
+      .isCommonModule(module.getOwner() instanceof CommonModule)
+      .ownerType(module.getOwner().getMdoType().getNameRu())
+      .moduleType(MDOHelper.getPresent(module.getModule().getModuleType()))
+      .methods(module.getMethods())
+      .description(module.getDescription())
+      .build();
   }
 
   public SubsystemContext create(Subsystem subsystem, int index, int level) {
     return SubsystemContext.builder()
-        .subsystem(subsystem)
-        .index(index)
-        .name(subsystem.getName())
-        .present(MDOHelper.getPresent(subsystem))
-        .description(subsystem.getComment())
-        .level(level)
-        .build();
+      .subsystem(subsystem)
+      .index(index)
+      .name(subsystem.getName())
+      .present(MDOHelper.getPresent(subsystem))
+      .description(subsystem.getComment())
+      .explanation(subsystem.getExplanation().get("ru")) // Берем русскую локаль. Если ее не будет, то вернет любую
+      .level(level)
+      .build();
   }
 
   public Context createContext(Object obj) {
     return Context.newBuilder(obj)
-        .resolver(
-            MapValueResolver.INSTANCE,
-            JavaBeanValueResolver.INSTANCE,
-            MethodValueResolver.INSTANCE,
-            FieldValueResolver.INSTANCE
-        )
-        .build();
+      .resolver(
+        MapValueResolver.INSTANCE,
+        JavaBeanValueResolver.INSTANCE,
+        MethodValueResolver.INSTANCE,
+        FieldValueResolver.INSTANCE
+      )
+      .build();
   }
 }
