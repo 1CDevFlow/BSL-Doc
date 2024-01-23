@@ -1,11 +1,11 @@
 package ru.alkoleft.bsl.doc.bsl.symbols;
 
-import com.github._1c_syntax.bsl.parser.description.BSLDescriptionReader;
-import com.github._1c_syntax.bsl.parser.description.MethodDescription;
-import com.github._1c_syntax.bsl.parser.description.support.SimpleRange;
 import com.github._1c_syntax.bsl.parser.BSLParser;
 import com.github._1c_syntax.bsl.parser.BSLParserBaseVisitor;
 import com.github._1c_syntax.bsl.parser.BSLTokenizer;
+import com.github._1c_syntax.bsl.parser.description.BSLDescriptionReader;
+import com.github._1c_syntax.bsl.parser.description.MethodDescription;
+import com.github._1c_syntax.bsl.parser.description.support.SimpleRange;
 import lombok.extern.slf4j.Slf4j;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
@@ -109,7 +109,8 @@ public class MethodSymbolComputer extends BSLParserBaseVisitor<ParseTree> {
     methods.add(method);
   }
 
-  private static List<ParameterDefinition> createParameters(BSLParser.ParamListContext paramList, Optional<MethodDescription> description) {
+  private static List<ParameterDefinition> createParameters(BSLParser.ParamListContext paramList,
+                                                            Optional<MethodDescription> description) {
     if (paramList == null) {
       return Collections.emptyList();
     }
@@ -178,7 +179,8 @@ public class MethodSymbolComputer extends BSLParserBaseVisitor<ParseTree> {
         .orElse("<UNKNOWN_IDENTIFIER>");
   }
 
-  private static Optional<ParameterDescription> getParameterDescription(String parameterName, Optional<MethodDescription> description) {
+  private static Optional<ParameterDescription> getParameterDescription(String parameterName,
+                                                                        Optional<MethodDescription> description) {
 
     return description.map(MethodDescription::getParameters)
         .stream()

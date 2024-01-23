@@ -32,13 +32,20 @@ public class AutodocManager {
   private final TemplatesDefinition templatesDefinition;
 
   @Builder
-  public AutodocManager(Filter filter, OutputOptions outputOptions, Path sources, Path destination, Path manualDocumentation, ManualMergeStrategy manualMergeStrategy, String header, String footer) {
+  public AutodocManager(Filter filter,
+                        OutputOptions outputOptions,
+                        Path sources,
+                        Path destination,
+                        Path manualDocumentation,
+                        ManualMergeStrategy manualMergeStrategy,
+                        String header,
+                        String footer) {
     this.destination = destination;
     this.outputOptions = outputOptions;
     this.manualMergeStrategy = manualMergeStrategy;
     this.templatesDefinition = new TemplatesDefinition(outputOptions.getOutputFormat().getPath(), header, footer);
-    manualContent = new ManualContent(manualDocumentation, destination);
-    bslContext = new BslContext(sources, filter);
+    this.manualContent = new ManualContent(manualDocumentation, destination);
+    this.bslContext = new BslContext(sources, filter);
 
     TitleProcessor.Factory.create(outputOptions.getOutputFormat());
   }
@@ -66,8 +73,8 @@ public class AutodocManager {
   public void clearOutput() {
     if (Files.exists(destination)) {
       Files.walk(destination)
-          .filter(it -> it != destination)
-          .forEach(this::deletePath);
+        .filter(it -> it != destination)
+        .forEach(this::deletePath);
     }
   }
 

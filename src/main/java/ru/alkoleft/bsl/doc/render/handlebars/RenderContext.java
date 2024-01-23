@@ -37,7 +37,7 @@ public class RenderContext {
 
   private RenderContext(TemplatesDefinition templatesDefinition) {
     this.templatesDefinition = templatesDefinition;
-    this.baseURL = getClass().getClassLoader().getResource(templatesDefinition.getPath());
+    this.baseURL = getClass().getClassLoader().getResource(templatesDefinition.path());
     handlebars = new Handlebars()
         .with(new URLTemplateLoader() {
           @Override
@@ -84,16 +84,17 @@ public class RenderContext {
       return loadedTemplates.get(name);
     }
     Template template;
-    if (Strings.isNullOrEmpty(templatesDefinition.getHeaderTemplate()) && Strings.isNullOrEmpty(templatesDefinition.getFooterTemplate())) {
+    if (Strings.isNullOrEmpty(templatesDefinition.headerTemplate())
+      && Strings.isNullOrEmpty(templatesDefinition.footerTemplate())) {
       template = handlebars.compile(name);
     } else {
       var builder = new StringBuilder();
-      if (!Strings.isNullOrEmpty(templatesDefinition.getHeaderTemplate())) {
-        builder.append(templatesDefinition.getHeaderTemplate()).append('\n');
+      if (!Strings.isNullOrEmpty(templatesDefinition.headerTemplate())) {
+        builder.append(templatesDefinition.headerTemplate()).append('\n');
       }
       builder.append(handlebars.getLoader().sourceAt(name).content(handlebars.getCharset()));
-      if (!Strings.isNullOrEmpty(templatesDefinition.getFooterTemplate())) {
-        builder.append('\n').append(templatesDefinition.getFooterTemplate());
+      if (!Strings.isNullOrEmpty(templatesDefinition.footerTemplate())) {
+        builder.append('\n').append(templatesDefinition.footerTemplate());
       }
       template = handlebars.compileInline(builder.toString());
     }

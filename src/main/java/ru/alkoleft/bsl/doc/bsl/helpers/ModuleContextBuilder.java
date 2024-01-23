@@ -31,11 +31,11 @@ public class ModuleContextBuilder {
     }
 
     return ModuleInfo.builder()
-        .owner(owner)
-        .module(bslModule)
-        .methods(methods)
-        .description(description)
-        .build();
+      .owner(owner)
+      .module(bslModule)
+      .methods(methods)
+      .description(description)
+      .build();
   }
 
   public ModuleInfo buildFilteredModuleContext(Module bslModule) {
@@ -47,11 +47,11 @@ public class ModuleContextBuilder {
     var stream = BslFilter.setFilter(module.getMethods().stream());
 
     return ModuleInfo.builder()
-        .module(module.getModule())
-        .owner(module.getOwner())
-        .description(module.getDescription())
-        .methods(stream.collect(Collectors.toList()))
-        .build();
+      .module(module.getModule())
+      .owner(module.getOwner())
+      .description(module.getDescription())
+      .methods(stream.collect(Collectors.toList()))
+      .build();
   }
 
 }

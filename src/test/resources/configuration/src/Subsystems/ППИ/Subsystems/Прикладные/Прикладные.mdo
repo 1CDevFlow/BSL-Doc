@@ -5,6 +5,10 @@
     <key>ru</key>
     <value>Прикладные объекты</value>
   </synonym>
+    <explanation>
+      <key>ru</key>
+      <value>Подробное описание подсистемы</value>
+    </explanation>
   <includeHelpInContents>true</includeHelpInContents>
   <includeInCommandInterface>true</includeInCommandInterface>
   <content>Constant.Константа1</content>

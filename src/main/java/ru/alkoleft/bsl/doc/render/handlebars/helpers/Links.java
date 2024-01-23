@@ -13,25 +13,14 @@ import java.util.regex.Pattern;
 
 @Slf4j
 public class Links implements Helper<String> {
-  private final Pattern linkPattern = Pattern.compile("см\\. (([\\wА-Яа-я\\.\\d]+)\\.)*([\\wА-Яа-я\\d]+)");
-  private final Pattern warningPattern = Pattern.compile("(\\n\\s*\\n|^)(Важно[\\s\\S]+)(\\n\\s*\\n|$)");
+  private static final Pattern LINK_PATTERN = Pattern.compile("см\\. (([\\wА-Яа-я\\.\\d]+)\\.)*([\\wА-Яа-я\\d]+)");
+  private static final Pattern WARNING_PATTERN = Pattern.compile("(\\n\\s*\\n|^)(Важно[\\s\\S]+)(\\n\\s*\\n|$)");
   @Setter
   private BslContext context;
 
   @Override
   public Object apply(String context, Options options) {
     return context;
-//    var matcher = linkPattern.matcher(context);
-//    String result;
-//    if (matcher.find()) {
-//      result = matcher.replaceAll(matchResult -> replaceTo(matcher.group(0), ru.alkoleft.bsl.doc.bsl.Links.createLink(matcher.group(2), matcher.group(3)), options));
-//    } else {
-//      result = context;
-//    }
-//
-//    result = handleWarning(result);
-//
-//    return result;
   }
 
   @SneakyThrows
@@ -48,19 +37,20 @@ public class Links implements Helper<String> {
   private String handleWarning(String content) {
     // TODO Реализовать и другие блоки https://docusaurus.io/docs/markdown-features/admonitions
     if (content.contains("Важно")) {
-      var matcher = warningPattern.matcher(content);
-      content = matcher.replaceAll(m -> m.group(1) + ":::tip важно\n\n" + matcher.group(2) + "\n\n:::" + matcher.group(3));
+      var matcher = WARNING_PATTERN.matcher(content);
+      content = matcher
+        .replaceAll(m -> m.group(1) + ":::tip важно\n\n" + matcher.group(2) + "\n\n:::" + matcher.group(3));
     }
     return content;
   }
 
   private String getLink(ru.alkoleft.bsl.doc.bsl.Links.Link link) {
-    if (link.getOwnerName() != null && link.getMethodName() != null) {
-      return link.getOwnerName() + "#" + link.getMethodName().toLowerCase(Locale.ROOT);
-    } else if (link.getOwnerName() != null) {
-      return link.getOwnerName();
-    } else if (link.getMethodName() != null) {
-      return "#" + link.getMethodName().toLowerCase(Locale.ROOT);
+    if (link.ownerName() != null && link.methodName() != null) {
+      return link.ownerName() + "#" + link.methodName().toLowerCase(Locale.ROOT);
+    } else if (link.ownerName() != null) {
+      return link.ownerName();
+    } else if (link.methodName() != null) {
+      return "#" + link.methodName().toLowerCase(Locale.ROOT);
     } else {
       return "";
     }

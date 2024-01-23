@@ -3,7 +3,6 @@ package ru.alkoleft.bsl.doc.bsl.helpers;
 import com.github._1c_syntax.bsl.mdo.Module;
 import com.github._1c_syntax.bsl.mdo.Subsystem;
 import com.github._1c_syntax.bsl.types.ModuleType;
-import com.github._1c_syntax.bsl.mdo.Module;
 import lombok.Getter;
 import lombok.experimental.UtilityClass;
 import ru.alkoleft.bsl.doc.bsl.Filter;
@@ -17,9 +16,9 @@ import java.util.stream.Stream;
 public class BslFilter {
 
   private final Set<ModuleType> moduleTypes = Set.of(
-      ModuleType.CommonModule,
-      ModuleType.ValueManagerModule,
-      ModuleType.ManagerModule
+    ModuleType.CommonModule,
+    ModuleType.ValueManagerModule,
+    ModuleType.ManagerModule
   );
 
   @Getter
@@ -31,7 +30,7 @@ public class BslFilter {
 
   public boolean checkMethod(MethodSymbol method) {
     return (!filter.isExport() || method.isExport())
-        && (filter.getRegions().isEmpty() || checkRegion(method));
+      && (filter.getRegions().isEmpty() || checkRegion(method));
   }
 
   public Stream<MethodSymbol> setFilter(Stream<MethodSymbol> stream) {

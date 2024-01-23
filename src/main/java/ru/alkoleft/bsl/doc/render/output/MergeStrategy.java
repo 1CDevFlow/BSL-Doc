@@ -10,7 +10,8 @@ import java.nio.file.Path;
 import java.util.regex.Pattern;
 
 public class MergeStrategy extends OutputStrategy {
-  private static final Pattern replacePattern = Pattern.compile("^.*generated_content.*$", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
+  private static final Pattern REPLACE_PATTERN =
+    Pattern.compile("([\\w\\W]*)(^.*generated_content.*$\\n?)([\\w\\W]*)", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
 
   @SneakyThrows
   @Override
@@ -18,9 +19,14 @@ public class MergeStrategy extends OutputStrategy {
     if (manualContent.isNotContains(itemPath)) {
       return super.save(itemPath, content);
     }
-    var manualContent = Files.read(itemPath.toFile(), StandardCharsets.UTF_8);
+    var fileContent = Files.read(itemPath.toFile(), StandardCharsets.UTF_8);
+    var parts = REPLACE_PATTERN.matcher(fileContent);
     content = TitleProcessor.getInstance().cleanTitle(content);
-    var result = replacePattern.matcher(manualContent).replaceFirst(content);
-    return super.save(itemPath, result);
+    if (parts.find()) {
+      var result = parts.group(1) + content + parts.group(3);
+      return super.save(itemPath, result);
+    } else {
+      return super.save(itemPath, content);
+    }
   }
 }

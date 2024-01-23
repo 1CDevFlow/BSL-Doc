@@ -6,11 +6,9 @@ import com.github.jknack.handlebars.Options;
 import ru.alkoleft.bsl.doc.bsl.helpers.MDOHelper;
 import ru.alkoleft.bsl.doc.render.contexts.SubsystemContext;
 
-import java.io.IOException;
-
 public class MdoPresent implements Helper<Object> {
   @Override
-  public Object apply(Object context, Options options) throws IOException {
+  public Object apply(Object context, Options options) {
     if (context instanceof MD) {
       return MDOHelper.getPresent((MD) context);
     } else if (context instanceof SubsystemContext) {

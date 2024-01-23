@@ -17,7 +17,15 @@ public class ModuleContext extends BaseContext {
   List<MethodSymbol> methods;
 
   @Builder
-  public ModuleContext(int index, String name, String present, String description, Path outputPath, boolean isCommonModule, String ownerType, String moduleType, List<MethodSymbol> methods) {
+  public ModuleContext(int index,
+                       String name,
+                       String present,
+                       String description,
+                       Path outputPath,
+                       boolean isCommonModule,
+                       String ownerType,
+                       String moduleType,
+                       List<MethodSymbol> methods) {
     super(index, name, present, description, outputPath);
     this.isCommonModule = isCommonModule;
     this.ownerType = ownerType;

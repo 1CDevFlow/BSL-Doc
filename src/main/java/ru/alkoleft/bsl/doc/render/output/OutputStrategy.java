@@ -14,13 +14,11 @@ import ru.alkoleft.bsl.doc.options.OutputFormat;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+@Setter
 @Getter
 public class OutputStrategy {
-  @Setter
   protected OutputFormat format;
-  @Setter
   protected ManualContent manualContent;
-  @Setter
   protected ContentModel contentModel;
 
   public boolean needRender(Path location) {
@@ -39,19 +37,11 @@ public class OutputStrategy {
   }
 
   public static OutputStrategy create(ManualMergeStrategy strategy) {
-    OutputStrategy processor;
-    switch (strategy) {
-      case APPEND:
-        processor = new AppendStrategy();
-        break;
-      case MERGE:
-        processor = new MergeStrategy();
-        break;
-      default:
-        processor = new OutputStrategy();
-        break;
-    }
-    return processor;
+    return switch (strategy) {
+      case APPEND -> new AppendStrategy();
+      case MERGE -> new MergeStrategy();
+      default -> new OutputStrategy();
+    };
   }
 
   public void init(OutputFormat format, ManualContent manualContent, ContentModel contentModel) {
