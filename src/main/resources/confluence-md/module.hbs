@@ -1,0 +1,43 @@
+# {{moduleType}} {{#unless isCommonModule}}{{ownerType}}.{{/unless}}{{name}}
+
+{{~#if description}}
+
+{{links description}}
+
+{{~/if}}
+
+{{~#each methods}}
+
+###### {{callExample}}
+
+{{#if description}}{{links description}}{{/if}}
+{{~#if parameters}}
+{{#each parameters as | parameter|}}
+* `{{parameter.name}}`{{#if required}} (**Обязательный**){{/if}}
+    {{~#eq parameter.types.size 1~}}
+    {{~#each parameter.types as | type typeIndex|}} - {{#with type~}}{{#shift 1}}{{#block "value-definition"}}{{/block}}{{/shift}}{{~/with}}
+    {{~else}} - {{links description}}
+    {{~/each}}
+    {{~else~}}
+{{~#each parameter.types as | type typeIndex|}}
+  * {{#with type}}{{#shift 1}}{{#block "value-definition"}}{{/block}}{{/shift}}{{~/with}}
+    {{~else}} - {{links description}}
+{{~/each}}
+    {{~/eq}}
+{{~/each}}
+    {{~/if}}
+{{~#if returnedValue}}
+
+*Возвращаемое значение*
+{{#with returnedValue~}}{{#block "value-definition"}}{{/block}}{{~/with}}
+{{~/if}}
+{{~#if examples}}
+Примеры:
+
+```bsl
+{{~#each examples}}
+{{this}}
+{{~/each}}
+```
+{{/if}}
+{{~/each}}

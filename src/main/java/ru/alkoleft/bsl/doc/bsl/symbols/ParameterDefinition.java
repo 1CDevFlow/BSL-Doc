@@ -1,6 +1,6 @@
 package ru.alkoleft.bsl.doc.bsl.symbols;
 
-import com.github._1c_syntax.bsl.languageserver.context.symbol.description.TypeDescription;
+import com.github._1c_syntax.bsl.parser.description.support.TypeDescription;
 import lombok.Builder;
 import lombok.Value;
 
@@ -18,13 +18,10 @@ public class ParameterDefinition {
   boolean byValue;
 
   public String getDescription() {
-    if (description.isEmpty()) {
-      return "";
-    }
-    return description.get().getTypes()
+    return description.map(parameterDescription -> parameterDescription.getTypes()
         .stream()
         .findFirst()
-        .map(TypeDescription::getDescription).orElse("");
+        .map(TypeDescription::getDescription).orElse("")).orElse("");
   }
 
   public List<TypeDescription> getTypes() {
@@ -33,6 +30,10 @@ public class ParameterDefinition {
     } else {
       return description.get().getTypes();
     }
+  }
+
+  public boolean isRequired() {
+    return defaultValue.type == ParameterType.EMPTY;
   }
 
   public enum ParameterType {

@@ -1,6 +1,6 @@
 package ru.alkoleft.bsl.doc.bsl.symbols;
 
-import com.github._1c_syntax.bsl.languageserver.context.symbol.description.ParameterDescription;
+import com.github._1c_syntax.bsl.parser.description.support.ParameterDescription;
 import lombok.AllArgsConstructor;
 import lombok.Value;
 

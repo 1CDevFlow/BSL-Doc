@@ -10,6 +10,12 @@ import java.util.List;
 @Builder
 public class Filter {
   boolean isExport;
+  boolean onlyCommonAndManagerModules = false;
   @Singular
   List<String> regions;
+  @Singular
+  List<String> rootSubsystems;
+  @Singular
+  List<String> modules;
+
 }
