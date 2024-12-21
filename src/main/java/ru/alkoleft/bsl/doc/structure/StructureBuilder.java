@@ -9,8 +9,6 @@ import java.util.Objects;
 
 public interface StructureBuilder {
 
-  List<Item> build(BslContext context);
-
   static StructureBuilder builder(OutputOptions options) {
     if (Objects.requireNonNull(options.getHierarchy()) == OutputHierarchy.SUBSYSTEM) {
       return new SubsystemsStructureBuilder();
@@ -40,4 +38,6 @@ public interface StructureBuilder {
     }
 
   }
+
+  List<Item> build(BslContext context);
 }

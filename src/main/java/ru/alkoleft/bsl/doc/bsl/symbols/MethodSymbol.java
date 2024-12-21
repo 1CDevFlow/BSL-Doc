@@ -42,10 +42,10 @@ public class MethodSymbol {
   @Nullable
   public TypeDescription getReturnedValue() {
     var result = fullDescription
-      .map(MethodDescription::getReturnedValue)
-      .filter(it -> !it.isEmpty())
-      .map(it -> it.get(0))
-      .orElse(null);
+        .map(MethodDescription::getReturnedValue)
+        .filter(it -> !it.isEmpty())
+        .map(it -> it.get(0))
+        .orElse(null);
 
     if (result != null) {
       return createTypeDescription(result);
@@ -67,10 +67,10 @@ public class MethodSymbol {
     }
     if (result == null) {
       result = new TypeDescription(baseDescription.getName(),
-        baseDescription.getDescription(),
-        baseDescription.getParameters(),
-        Strings.isNullOrEmpty(baseDescription.getLink()) ? null : "см. " + baseDescription.getLink(),
-        baseDescription.isHyperlink());
+          baseDescription.getDescription(),
+          baseDescription.getParameters(),
+          Strings.isNullOrEmpty(baseDescription.getLink()) ? null : "см. " + baseDescription.getLink(),
+          baseDescription.isHyperlink());
     }
     return result;
   }

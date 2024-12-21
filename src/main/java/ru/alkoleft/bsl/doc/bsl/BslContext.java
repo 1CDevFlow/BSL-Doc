@@ -45,6 +45,7 @@ public class BslContext {
   public ModuleInfo getModuleContext(Module module) {
     return builder.buildFilteredModuleContext(module);
   }
+
   public Stream<Subsystem> getRootSubsystems(boolean filtered) {
     var stream = configuration.getSubsystems().stream();
 
@@ -97,13 +98,13 @@ public class BslContext {
     var method = module.flatMap(it -> it.getMethod(link.methodName()));
 
     return MethodInfo.builder()
-      .module(module.orElse(null))
-      .method(method.orElse(null))
-      .publishing(module.isPresent()
-        && method.isPresent()
-        && BslFilter.checkModule(module.get())
-        && BslFilter.checkMethod(method.get()))
-      .build();
+        .module(module.orElse(null))
+        .method(method.orElse(null))
+        .publishing(module.isPresent()
+            && method.isPresent()
+            && BslFilter.checkModule(module.get())
+            && BslFilter.checkMethod(method.get()))
+        .build();
   }
 
 }

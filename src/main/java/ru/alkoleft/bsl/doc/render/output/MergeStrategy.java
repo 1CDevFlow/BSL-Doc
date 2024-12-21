@@ -11,7 +11,7 @@ import java.util.regex.Pattern;
 
 public class MergeStrategy extends OutputStrategy {
   private static final Pattern REPLACE_PATTERN =
-    Pattern.compile("([\\w\\W]*)(^.*generated_content.*$\\n?)([\\w\\W]*)", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
+      Pattern.compile("([\\w\\W]*)(^.*generated_content.*$\\n?)([\\w\\W]*)", Pattern.CASE_INSENSITIVE | Pattern.MULTILINE);
 
   @SneakyThrows
   @Override

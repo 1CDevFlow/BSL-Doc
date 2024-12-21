@@ -5,7 +5,6 @@ import com.github._1c_syntax.bsl.mdo.MD;
 import com.github._1c_syntax.bsl.mdo.Module;
 import com.github._1c_syntax.bsl.mdo.children.ObjectModule;
 import com.github._1c_syntax.bsl.types.ModuleType;
-import com.github._1c_syntax.bsl.types.MdoReference;
 import lombok.experimental.UtilityClass;
 import ru.alkoleft.bsl.doc.bsl.BslContext;
 
@@ -27,9 +26,7 @@ public class MDOHelper {
     if (object.getSynonym().getContent().isEmpty()) {
       return object.getName();
     }
-    var content = object.getSynonym().getContent();
-    var itr = content.values().iterator();
-    return itr.next();
+    return object.getSynonym().getAny();
   }
 
   public String getPresent(ModuleType moduleType) {

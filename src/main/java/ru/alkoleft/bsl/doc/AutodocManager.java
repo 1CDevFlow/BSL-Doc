@@ -73,8 +73,8 @@ public class AutodocManager {
   public void clearOutput() {
     if (Files.exists(destination)) {
       Files.walk(destination)
-        .filter(it -> it != destination)
-        .forEach(this::deletePath);
+          .filter(it -> it != destination)
+          .forEach(this::deletePath);
     }
   }
 

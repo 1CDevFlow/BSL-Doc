@@ -20,13 +20,12 @@ import java.util.stream.Collectors;
 public class SubsystemContext extends BaseContext {
   private final int level;
   private final Subsystem subsystem;
-  @Setter
-  private ContentModel contentModel;
-
   /**
    * Описание подсистемы
    */
   private final String explanation;
+  @Setter
+  private ContentModel contentModel;
 
   @Builder
   public SubsystemContext(int index,

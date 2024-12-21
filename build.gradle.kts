@@ -27,7 +27,6 @@ gitVersioning.apply {
 }
 
 val JUINT_VERSION = "5.8.2"
-
 val JACKSON_VERSION = "2.15.2"
 
 repositories {
@@ -48,9 +47,9 @@ dependencies {
     implementation("info.picocli", "picocli", "4.7.5")
 
     // 1c-syntax
-    implementation("io.github.1c-syntax", "mdclasses", "develop-SNAPSHOT")
-    implementation("com.github.1c-syntax", "utils", "0.5.2")
-    implementation("io.github.1c-syntax", "bsl-common-library", "0.5.0")
+    implementation("io.github.1c-syntax", "mdclasses", "0.14.0")
+    implementation("io.github.1c-syntax", "utils", "0.6.1")
+    implementation("io.github.1c-syntax", "bsl-common-library", "0.7.0")
     implementation("io.github.1c-syntax", "bsl-parser-core", "0.1.0")
     implementation("io.github.1c-syntax", "bsl-parser", "0.24.0") {
         exclude("com.tunnelvisionlabs", "antlr4-annotations")

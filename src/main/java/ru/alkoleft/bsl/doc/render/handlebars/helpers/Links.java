@@ -39,7 +39,7 @@ public class Links implements Helper<String> {
     if (content.contains("Важно")) {
       var matcher = WARNING_PATTERN.matcher(content);
       content = matcher
-        .replaceAll(m -> m.group(1) + ":::tip важно\n\n" + matcher.group(2) + "\n\n:::" + matcher.group(3));
+          .replaceAll(m -> m.group(1) + ":::tip важно\n\n" + matcher.group(2) + "\n\n:::" + matcher.group(3));
     }
     return content;
   }

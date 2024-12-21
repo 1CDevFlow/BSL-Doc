@@ -23,10 +23,10 @@ import java.util.List;
 public class StructureRender implements StructureVisitor {
   private final OutputStrategy outputStrategy;
   private final ContentModel contentModel;
+  private final OutputOptions outputOptions;
   private boolean withRoot = false;
   private int subsystemLevel = 0;
   private PathResolver pathResolver;
-  private final OutputOptions outputOptions;
 
   public StructureRender(OutputOptions outputOptions, OutputStrategy outputStrategy, ContentModel contentModel) {
     this.outputStrategy = outputStrategy;
@@ -103,13 +103,13 @@ public class StructureRender implements StructureVisitor {
       Links.setCurrentPath(path);
       var content = BslRender.renderSubsystem(context);
       outputStrategy.save(path, content)
-        .setType(PageType.SUBSYSTEM);
+          .setType(PageType.SUBSYSTEM);
     }
   }
 
   private Path getSubsystemPagePath(SubsystemItem item) {
     return outputOptions.getChildLayout() == ChildLayout.SAME_DIRECTORY
-      ? pathResolver.getFilePath("index")
-      : pathResolver.getFilePath(item.getName());
+        ? pathResolver.getFilePath("index")
+        : pathResolver.getFilePath(item.getName());
   }
 }

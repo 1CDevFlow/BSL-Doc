@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 @UtilityClass
 public class Links {
   private static final Pattern PATTERN_WITH_SEE =
-    Pattern.compile("^см\\. (([\\wА-Яа-я\\.\\d]+)\\.)*([\\wА-Яа-я\\d]+)$");
+      Pattern.compile("^см\\. (([\\wА-Яа-я\\.\\d]+)\\.)*([\\wА-Яа-я\\d]+)$");
   private static final Pattern PATTERN = Pattern.compile("^(([\\wА-Яа-я\\.\\d]+)\\.)*([\\wА-Яа-я\\d]+)$");
 
   public Link parseLink(String link, boolean withSee) {

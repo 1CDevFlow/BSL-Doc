@@ -85,7 +85,7 @@ public class RenderContext {
     }
     Template template;
     if (Strings.isNullOrEmpty(templatesDefinition.headerTemplate())
-      && Strings.isNullOrEmpty(templatesDefinition.footerTemplate())) {
+        && Strings.isNullOrEmpty(templatesDefinition.footerTemplate())) {
       template = handlebars.compile(name);
     } else {
       var builder = new StringBuilder();

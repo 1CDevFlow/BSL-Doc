@@ -21,6 +21,14 @@ public class OutputStrategy {
   protected ManualContent manualContent;
   protected ContentModel contentModel;
 
+  public static OutputStrategy create(ManualMergeStrategy strategy) {
+    return switch (strategy) {
+      case APPEND -> new AppendStrategy();
+      case MERGE -> new MergeStrategy();
+      default -> new OutputStrategy();
+    };
+  }
+
   public boolean needRender(Path location) {
     return true;
   }
@@ -34,14 +42,6 @@ public class OutputStrategy {
     }
 
     return page;
-  }
-
-  public static OutputStrategy create(ManualMergeStrategy strategy) {
-    return switch (strategy) {
-      case APPEND -> new AppendStrategy();
-      case MERGE -> new MergeStrategy();
-      default -> new OutputStrategy();
-    };
   }
 
   public void init(OutputFormat format, ManualContent manualContent, ContentModel contentModel) {

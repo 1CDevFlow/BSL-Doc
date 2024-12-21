@@ -3,7 +3,6 @@ package ru.alkoleft.bsl.doc.bsl.helpers;
 import com.github._1c_syntax.bsl.mdo.Module;
 import com.github._1c_syntax.bsl.mdo.Subsystem;
 import com.github._1c_syntax.bsl.types.ModuleType;
-import com.github._1c_syntax.bsl.mdo.Module;
 import lombok.Getter;
 import lombok.experimental.UtilityClass;
 import ru.alkoleft.bsl.doc.bsl.Filter;

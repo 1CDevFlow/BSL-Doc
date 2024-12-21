@@ -20,19 +20,19 @@ public class ModuleComputer {
     while (token != null && !isDescription) {
       comments = Trees.getComments(tokenizer.getTokens(), token);
       isDescription = !comments.isEmpty()
-        && comments.stream()
-        .map(Token::getText)
-        .map(it -> it.substring(2))
-        .map(String::trim)
-        .noneMatch(it -> it.contains("Copyright") || it.contains("Экспортные"));
+          && comments.stream()
+          .map(Token::getText)
+          .map(it -> it.substring(2))
+          .map(String::trim)
+          .noneMatch(it -> it.contains("Copyright") || it.contains("Экспортные"));
       token = comments.isEmpty() ? null : comments.get(0);
     }
     if (isDescription) {
       var lines = comments.stream()
-        .map(Token::getText)
-        .map(it -> it.substring(2))
-        .filter(it -> it.isEmpty() || !it.matches("/+"))
-        .collect(Collectors.toList());
+          .map(Token::getText)
+          .map(it -> it.substring(2))
+          .filter(it -> it.isEmpty() || !it.matches("/+"))
+          .collect(Collectors.toList());
 
       var chars = lines.get(0).toCharArray();
 
@@ -53,8 +53,8 @@ public class ModuleComputer {
       if (chars.length > 0) {
         char[] finalChars = chars;
         return lines.stream()
-          .map(it -> it.substring(finalChars.length))
-          .collect(Collectors.joining("\n"));
+            .map(it -> it.substring(finalChars.length))
+            .collect(Collectors.joining("\n"));
       } else {
         return String.join("\n", lines);
       }
