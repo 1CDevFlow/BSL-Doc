@@ -52,7 +52,15 @@ dependencies {
     implementation("com.github.1c-syntax", "utils", "0.5.2")
     implementation("io.github.1c-syntax", "bsl-common-library", "0.5.0")
     implementation("io.github.1c-syntax", "bsl-parser-core", "0.1.0")
-    implementation("io.github.1c-syntax", "bsl-parser", "0.24.0")
+    implementation("io.github.1c-syntax", "bsl-parser", "0.24.0") {
+        exclude("com.tunnelvisionlabs", "antlr4-annotations")
+        exclude("commons-beanutils", "commons-beanutils")
+        exclude("com.ibm.icu", "*")
+        exclude("org.antlr", "ST4")
+        exclude("org.abego.treelayout", "org.abego.treelayout.core")
+        exclude("org.antlr", "antlr-runtime")
+        exclude("org.glassfish", "javax.json")
+    }
     // logging
     implementation("org.slf4j", "slf4j-api", "1.7.30")
 

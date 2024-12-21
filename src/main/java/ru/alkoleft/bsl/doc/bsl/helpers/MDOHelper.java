@@ -5,6 +5,7 @@ import com.github._1c_syntax.bsl.mdo.MD;
 import com.github._1c_syntax.bsl.mdo.Module;
 import com.github._1c_syntax.bsl.mdo.children.ObjectModule;
 import com.github._1c_syntax.bsl.types.ModuleType;
+import com.github._1c_syntax.bsl.types.MdoReference;
 import lombok.experimental.UtilityClass;
 import ru.alkoleft.bsl.doc.bsl.BslContext;
 

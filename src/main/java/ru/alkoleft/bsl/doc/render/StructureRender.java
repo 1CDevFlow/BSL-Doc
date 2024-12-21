@@ -80,7 +80,7 @@ public class StructureRender implements StructureVisitor {
       Links.setCurrentPath(path);
       var content = BslRender.renderModule(moduleContext, index);
       outputStrategy.save(path, content)
-        .setType(PageType.MODULE);
+          .setType(PageType.MODULE);
     }
   }
 

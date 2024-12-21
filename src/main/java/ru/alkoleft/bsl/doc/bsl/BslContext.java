@@ -36,16 +36,15 @@ public class BslContext {
 
   public Stream<Module> getModules() {
     return configuration.getChildren().stream()
-      .filter(ModuleOwner.class::isInstance)
-      .map(ModuleOwner.class::cast)
-      .flatMap(it -> it.getModules().stream())
-      .filter(BslFilter::checkModule);
+        .filter(ModuleOwner.class::isInstance)
+        .map(ModuleOwner.class::cast)
+        .flatMap(it -> it.getModules().stream())
+        .filter(BslFilter::checkModule);
   }
 
   public ModuleInfo getModuleContext(Module module) {
     return builder.buildFilteredModuleContext(module);
   }
-
   public Stream<Subsystem> getRootSubsystems(boolean filtered) {
     var stream = configuration.getSubsystems().stream();
 
@@ -69,15 +68,15 @@ public class BslContext {
 
   public Stream<MD> getSubsystemObjects(Subsystem subsystem) {
     return subsystem.getContent().stream()
-      .map(configuration::findChild)
-      .filter(Optional::isPresent)
-      .map(Optional::get);
+        .map(configuration::findChild)
+        .filter(Optional::isPresent)
+        .map(Optional::get);
   }
 
   public void load() {
     modules = getModules()
-      .map(builder::buildModuleContext)
-      .collect(Collectors.toList());
+        .map(builder::buildModuleContext)
+        .collect(Collectors.toList());
   }
 
   public MethodInfo getMethodInfo(String link) {

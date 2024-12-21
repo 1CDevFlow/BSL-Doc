@@ -17,16 +17,16 @@ class RenderCommandTest {
   @Test
   void run() {
     RenderCommand.builder()
-      .sources(getResource("configuration"))
-      .destination(Path.of("c:\\tmp\\bsl-doc-fixture"))
-      .format(OutputFormat.ConfluenceMarkdown)
-      .onlySubsystems(List.of("ППИ"))
-      .regions(List.of(RegionSymbol.PUBLIC_REGION_RU))
-      .manualDocumentation(getResource("docs"))
-      .manualMergeStrategy(ManualMergeStrategy.MERGE)
-      .hierarchy(OutputHierarchy.SUBSYSTEM)
-      .build()
-      .run();
+        .sources(getResource("configuration"))
+        .destination(Path.of("/tmp/bsl-doc-fixture"))
+        .format(OutputFormat.ConfluenceMarkdown)
+        .onlySubsystems(List.of("ППИ"))
+        .regions(List.of(RegionSymbol.PUBLIC_REGION_RU))
+        .manualDocumentation(getResource("docs"))
+        .manualMergeStrategy(ManualMergeStrategy.MERGE)
+        .hierarchy(OutputHierarchy.SUBSYSTEM)
+        .build()
+        .run();
   }
 
   @SneakyThrows

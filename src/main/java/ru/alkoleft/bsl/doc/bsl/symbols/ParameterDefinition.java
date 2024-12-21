@@ -19,9 +19,9 @@ public class ParameterDefinition {
 
   public String getDescription() {
     return description.map(parameterDescription -> parameterDescription.getTypes()
-      .stream()
-      .findFirst()
-      .map(TypeDescription::getDescription).orElse("")).orElse("");
+        .stream()
+        .findFirst()
+        .map(TypeDescription::getDescription).orElse("")).orElse("");
   }
 
   public List<TypeDescription> getTypes() {
